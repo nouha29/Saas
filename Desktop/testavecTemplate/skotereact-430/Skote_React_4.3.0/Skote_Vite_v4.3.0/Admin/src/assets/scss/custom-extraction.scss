@@ -1,0 +1,93 @@
+// src/assets/scss/custom-extraction.scss
+
+// Variables personnalisées pour harmoniser avec Skote
+$primary-color: #4a81d4; // Bleu principal
+$secondary-color: #f8f9fa; // Gris clair pour le fond
+$accent-color: #ff9800; // Orange pour les accents
+$text-color: #495057; // Gris foncé pour le texte
+
+// Style du conteneur principal
+.data-extraction-dashboard {
+  padding: 20px;
+  background-color: $secondary-color;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+
+  // Titre du dashboard
+  .card-title {
+    color: $primary-color;
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 20px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  // Zone de chargement
+  .loading {
+    font-size: 1.1rem;
+    color: $text-color;
+    text-align: center;
+    padding: 20px;
+  }
+
+  // Tableau
+  .table {
+    margin-top: 20px;
+    border: 1px solid #dee2e6;
+    border-radius: 5px;
+    overflow: hidden;
+
+    th {
+      background-color: $primary-color;
+      color: #fff;
+      font-weight: 500;
+      padding: 12px;
+      text-align: left;
+    }
+
+    td {
+      padding: 10px;
+      color: $text-color;
+      border-top: 1px solid #dee2e6;
+    }
+
+    tr:hover {
+      background-color: #f1f3f5;
+      transition: background-color 0.3s ease;
+    }
+  }
+
+  // Bouton d'extraction
+  .btn-extract {
+    background-color: $accent-color;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+
+    &:hover {
+      background-color: darken($accent-color, 10%);
+      transform: translateY(-2px);
+    }
+
+    &:disabled {
+      background-color: #ccc;
+      cursor: not-allowed;
+    }
+  }
+
+  // Zone de prévisualisation des données
+  .extracted-data {
+    margin-top: 20px;
+    padding: 15px;
+    background-color: #fff;
+    border: 1px solid #e9ecef;
+    border-radius: 5px;
+    font-size: 0.9rem;
+    color: $text-color;
+    white-space: pre-wrap;
+  }
+}
