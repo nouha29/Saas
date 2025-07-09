@@ -6,6 +6,7 @@ import { BrowserRouter } from 'react-router-dom'
 import "./i18n"
 import { Provider } from 'react-redux'
 import store from './store/index.js'
+import DataExtractionRoot from "./pages/DataExtractionRoot";
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.Fragment>

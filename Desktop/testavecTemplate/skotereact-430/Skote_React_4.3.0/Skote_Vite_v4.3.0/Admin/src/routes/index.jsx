@@ -3,29 +3,31 @@ import { Navigate } from "react-router-dom";
 
 // Pages Component
 import Chat from "../pages/Chat/Chat";
-import ExtractionDashboard from "../pages/ExtractionDashboard.jsx"; // Change .js to .jsx
+import ExtractionDashboard from "../pages/ExtractionDashboard"; // Adjust based on your structure
+import DataExtractionRoot from "../pages/DataExtractionRoot.jsx"; // Add this line
+import BankStatements from "../pages/BankStatementsPage.jsx"; // Keep this one
 
-// // File Manager
+// File Manager
 import FileManager from "../pages/FileManager/index";
 
-// // Profile
+// Profile
 import UserProfile from "../pages/Authentication/user-profile";
 
 // Pages Calendar
 import Calendar from "../pages/Calendar/index";
 
-// // //Tasks
+// Tasks
 import TasksList from "../pages/Tasks/tasks-list";
 import TasksCreate from "../pages/Tasks/tasks-create";
 import TasksKanban from "../pages/Tasks/tasks-kanban";
 
-// // //Projects
+// Projects
 import ProjectsGrid from "../pages/Projects/projects-grid";
 import ProjectsList from "../pages/Projects/projects-list";
 import ProjectsOverview from "../pages/Projects/ProjectOverview/projects-overview";
 import ProjectsCreate from "../pages/Projects/projects-create";
 
-// // //Ecommerce Pages
+// Ecommerce Pages
 import EcommerceProducts from "../pages/Ecommerce/EcommerceProducts";
 import EcommerceProductDetail from "../pages/Ecommerce/EcommerceProductDetail/index";
 import EcommerceOrders from "../pages/Ecommerce/EcommerceOrders/index";
@@ -35,24 +37,24 @@ import EcommerceCheckout from "../pages/Ecommerce/EcommerceCheckout";
 import EcommerceShops from "../pages/Ecommerce/EcommerceShops/index";
 import EcommerenceAddProduct from "../pages/Ecommerce/EcommerceAddProduct";
 
-// //Email
+// Email
 import EmailInbox from "../pages/Email/email-inbox";
 import EmailRead from "../pages/Email/email-read";
 import EmailBasicTemplte from "../pages/Email/email-basic-templte";
 import EmailAlertTemplte from "../pages/Email/email-template-alert";
 import EmailTemplateBilling from "../pages/Email/email-template-billing";
 
-// //Invoices
+// Invoices
 import InvoicesList from "../pages/Invoices/invoices-list";
 import InvoiceDetail from "../pages/Invoices/invoices-detail";
 
-// // Authentication related pages
+// Authentication related pages
 import Login from "../pages/Authentication/Login";
 import Logout from "../pages/Authentication/Logout";
 import Register from "../pages/Authentication/Register";
 import ForgetPwd from "../pages/Authentication/ForgetPassword";
 
-// //  // Inner Authentication
+// Inner Authentication
 import Login1 from "../pages/AuthenticationInner/Login";
 import Login2 from "../pages/AuthenticationInner/Login2";
 import Register1 from "../pages/AuthenticationInner/Register";
@@ -70,14 +72,14 @@ import EmailVerification2 from "../pages/AuthenticationInner/auth-email-verifica
 import TwostepVerification from "../pages/AuthenticationInner/auth-two-step-verification";
 import TwostepVerification2 from "../pages/AuthenticationInner/auth-two-step-verification-2";
 
-// // Dashboard
+// Dashboard
 import Dashboard from "../pages/Dashboard/index";
 import DashboardSaas from "../pages/Dashboard-saas/index";
 import DashboardCrypto from "../pages/Dashboard-crypto/index";
 import Blog from "../pages/Dashboard-Blog/index";
 import DashboardJob from "../pages/DashboardJob/index";
 
-// //Crypto
+// Crypto
 import CryptoWallet from "../pages/Crypto/CryptoWallet/crypto-wallet";
 import CryptoBuySell from "../pages/Crypto/crypto-buy-sell";
 import CryptoExchange from "../pages/Crypto/crypto-exchange";
@@ -86,7 +88,7 @@ import CryptoOrders from "../pages/Crypto/CryptoOrders";
 import CryptoKYCApplication from "../pages/Crypto/crypto-kyc-application";
 import CryptoIcoLanding from "../pages/Crypto/CryptoIcoLanding/index";
 
-// // Charts
+// Charts
 import ChartApex from "../pages/Charts/Apexcharts";
 import ChartjsChart from "../pages/Charts/ChartjsChart";
 import EChart from "../pages/Charts/EChart";
@@ -94,25 +96,25 @@ import SparklineChart from "../pages/Charts/SparklineChart";
 import ChartsKnob from "../pages/Charts/charts-knob";
 import ReCharts from "../pages/Charts/ReCharts";
 
-// // Maps
+// Maps
 import MapsGoogle from "../pages/Maps/MapsGoogle";
 
-// //Icons
+// Icons
 import IconBoxicons from "../pages/Icons/IconBoxicons";
 import IconDripicons from "../pages/Icons/IconDripicons";
 import IconMaterialdesign from "../pages/Icons/IconMaterialdesign";
 import IconFontawesome from "../pages/Icons/IconFontawesome";
 
-// //Tables
+// Tables
 import BasicTables from "../pages/Tables/BasicTables";
 import DatatableTables from "../pages/Tables/DatatableTables";
 
-// //Blog
+// Blog
 import BlogList from "../pages/Blog/BlogList/index";
 import BlogGrid from "../pages/Blog/BlogGrid/index";
 import BlogDetails from "../pages/Blog/BlogDetails";
 
-//Job
+// Job
 import JobGrid from "../pages/JobPages/JobGrid/index";
 import JobDetails from "../pages/JobPages/JobDetails";
 import JobCategories from "../pages/JobPages/JobCategories";
@@ -121,7 +123,7 @@ import ApplyJobs from "../pages/JobPages/ApplyJobs/index";
 import CandidateList from "../pages/JobPages/CandidateList";
 import CandidateOverview from "../pages/JobPages/CandidateOverview";
 
-// // Forms
+// Forms
 import FormElements from "../pages/Forms/FormElements";
 import FormLayouts from "../pages/Forms/FormLayouts";
 import FormAdvanced from "../pages/Forms/FormAdvanced/index";
@@ -133,7 +135,7 @@ import FormUpload from "../pages/Forms/FormUpload";
 import FormWizard from "../pages/Forms/FormWizard";
 import DualListbox from "../pages/Tables/DualListbox";
 
-// //Ui
+// Ui
 import UiAlert from "../pages/Ui/UiAlerts/index";
 import UiButtons from "../pages/Ui/UiButtons/index";
 import UiCards from "../pages/Ui/UiCard/index";
@@ -148,7 +150,6 @@ import UiImages from "../pages/Ui/UiImages";
 import UiLightbox from "../pages/Ui/UiLightbox";
 import UiModal from "../pages/Ui/UiModal/index";
 
-
 import UiTabsAccordions from "../pages/Ui/UiTabsAccordions";
 import UiTypography from "../pages/Ui/UiTypography";
 import UiVideo from "../pages/Ui/UiVideo";
@@ -161,7 +162,7 @@ import UiPlaceholders from "../pages/Ui/UiPlaceholders";
 import UiToasts from "../pages/Ui/UiToast";
 import UiUtilities from "../pages/Ui/UiUtilities";
 
-// //Pages
+// Pages
 import PagesStarter from "../pages/Utility/pages-starter";
 import PagesMaintenance from "../pages/Utility/pages-maintenance";
 import PagesComingsoon from "../pages/Utility/pages-comingsoon";
@@ -171,12 +172,11 @@ import PagesPricing from "../pages/Utility/pages-pricing";
 import Pages404 from "../pages/Utility/pages-404";
 import Pages500 from "../pages/Utility/pages-500";
 
-// //Contacts
+// Contacts
 import ContactsGrid from "../pages/Contacts/contacts-grid";
 import ContactsList from "../pages/Contacts/ContactList/contacts-list";
 import ContactsProfile from "../pages/Contacts/ContactsProfile/index";
 import UiProgressbar from "../pages/Ui/UiProgressbar";
-// import UiProgressbar from "../../src/pages/Ui/UiProgressbar"
 
 const authProtectedRoutes = [
   { path: "/dashboard", component: <Dashboard /> },
@@ -185,7 +185,7 @@ const authProtectedRoutes = [
   { path: "/blog", component: <Blog /> },
   { path: "/dashboard-job", component: <DashboardJob /> },
 
-  //   //Crypto
+  // Crypto
   { path: "/crypto-wallet", component: <CryptoWallet /> },
   { path: "/crypto-buy-sell", component: <CryptoBuySell /> },
   { path: "/crypto-exchange", component: <CryptoExchange /> },
@@ -193,21 +193,23 @@ const authProtectedRoutes = [
   { path: "/crypto-orders", component: <CryptoOrders /> },
   { path: "/crypto-kyc-application", component: <CryptoKYCApplication /> },
 
-//DataExtract
-  { path: "/data-extraction", component: <ExtractionDashboard /> },
-  //chat
+  // DataExtract
+  { path: "/data-extraction/*", component: <ExtractionDashboard /> },
+  {path: "/data-extraction-root/*", component: <DataExtractionRoot />}, // Add this line for the root component
+  
+  // chat
   { path: "/chat", component: <Chat /> },
 
-  //File Manager
+  // File Manager
   { path: "/apps-filemanager", component: <FileManager /> },
 
-  // //calendar
+  // calendar
   { path: "/calendar", component: <Calendar /> },
 
-  //   // //profile
+  // profile
   { path: "/profile", component: <UserProfile /> },
 
-  //   //Ecommerce
+  // Ecommerce
   {
     path: "/ecommerce-product-detail/:id",
     component: <EcommerceProductDetail />,
@@ -220,31 +222,31 @@ const authProtectedRoutes = [
   { path: "/ecommerce-shops", component: <EcommerceShops /> },
   { path: "/ecommerce-add-product", component: <EcommerenceAddProduct /> },
 
-  //   //Email
+  // Email
   { path: "/email-inbox", component: <EmailInbox /> },
   { path: "/email-read/:id?", component: <EmailRead /> },
   { path: "/email-template-basic", component: <EmailBasicTemplte /> },
   { path: "/email-template-alert", component: <EmailAlertTemplte /> },
   { path: "/email-template-billing", component: <EmailTemplateBilling /> },
 
-  //   //Invoices
+  // Invoices
   { path: "/invoices-list", component: <InvoicesList /> },
   { path: "/invoices-detail", component: <InvoiceDetail /> },
   { path: "/invoices-detail/:id?", component: <InvoiceDetail /> },
 
-  //   // Tasks
+  // Tasks
   { path: "/tasks-list", component: <TasksList /> },
   { path: "/tasks-create", component: <TasksCreate /> },
   { path: "/tasks-kanban", component: <TasksKanban /> },
 
-  //   //Projects
+  // Projects
   { path: "/projects-grid", component: <ProjectsGrid /> },
   { path: "/projects-list", component: <ProjectsList /> },
   { path: "/projects-overview", component: <ProjectsOverview /> },
   { path: "/projects-overview/:id", component: <ProjectsOverview /> },
   { path: "/projects-create", component: <ProjectsCreate /> },
 
-  //   //Blog
+  // Blog
   { path: "/blog-list", component: <BlogList /> },
   { path: "/blog-grid", component: <BlogGrid /> },
   { path: "/blog-details", component: <BlogDetails /> },
@@ -262,7 +264,7 @@ const authProtectedRoutes = [
   { path: "/contacts-list", component: <ContactsList /> },
   { path: "/contacts-profile", component: <ContactsProfile /> },
 
-  //   //Charts
+  // Charts
   { path: "/apex-charts", component: <ChartApex /> },
   { path: "/chartjs-charts", component: <ChartjsChart /> },
   { path: "/e-charts", component: <EChart /> },
@@ -270,20 +272,20 @@ const authProtectedRoutes = [
   { path: "/charts-knob", component: <ChartsKnob /> },
   { path: "/re-charts", component: <ReCharts /> },
 
-  //   // Icons
+  // Icons
   { path: "/icons-boxicons", component: <IconBoxicons /> },
   { path: "/icons-dripicons", component: <IconDripicons /> },
   { path: "/icons-materialdesign", component: <IconMaterialdesign /> },
   { path: "/icons-fontawesome", component: <IconFontawesome /> },
 
-  //   // Tables
+  // Tables
   { path: "/tables-basic", component: <BasicTables /> },
   { path: "/tables-datatable", component: <DatatableTables /> },
 
-  //   // Maps
+  // Maps
   { path: "/maps-google", component: <MapsGoogle /> },
 
-  //   // Forms
+  // Forms
   { path: "/form-elements", component: <FormElements /> },
   { path: "/form-layouts", component: <FormLayouts /> },
   { path: "/form-advanced", component: <FormAdvanced /> },
@@ -295,7 +297,7 @@ const authProtectedRoutes = [
   { path: "/form-validation", component: <FormValidations /> },
   { path: "/dual-listbox", component: <DualListbox /> },
 
-  //   // Ui
+  // Ui
   { path: "/ui-alerts", component: <UiAlert /> },
   { path: "/ui-buttons", component: <UiButtons /> },
   { path: "/ui-cards", component: <UiCards /> },
@@ -320,14 +322,14 @@ const authProtectedRoutes = [
   { path: "/ui-toasts", component: <UiToasts /> },
   { path: "/ui-utilities", component: <UiUtilities /> },
 
-  //   //Utility
+  // Utility
   { path: "/pages-starter", component: <PagesStarter /> },
   { path: "/pages-timeline", component: <PagesTimeline /> },
   { path: "/pages-faqs", component: <PagesFaqs /> },
   { path: "/pages-pricing", component: <PagesPricing /> },
 
-  //   // this route should be at the end of all other routes
-  //   // eslint-disable-next-line react/display-name
+  // this route should be at the end of all other routes
+  // eslint-disable-next-line react/display-name
   { path: "/", exact: true, component: <Navigate to="/dashboard" /> },
 ];
 
@@ -343,7 +345,7 @@ const publicRoutes = [
   { path: "/pages-500", component: <Pages500 /> },
   { path: "/crypto-ico-landing", component: <CryptoIcoLanding /> },
 
-  //   // Authentication Inner
+  // Authentication Inner
   { path: "/pages-login", component: <Login1 /> },
   { path: "/pages-login-2", component: <Login2 /> },
   { path: "/pages-register", component: <Register1 /> },
@@ -366,4 +368,4 @@ const publicRoutes = [
 ];
 
 // export { authProtectedRoutes, publicRoutes };
-export { authProtectedRoutes, publicRoutes }
+export { authProtectedRoutes, publicRoutes }; 

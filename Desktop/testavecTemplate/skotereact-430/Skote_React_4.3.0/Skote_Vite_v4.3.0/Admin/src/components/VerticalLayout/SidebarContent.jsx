@@ -237,15 +237,27 @@ const SidebarContent = (props) => {
                 </li>
               </ul>
             </li>
-               <li>
+              
           
           
-          <Link to="/data-extraction">
-          <i className="bx bx-data"></i> {/* Ajoute une icône appropriée, e.g., bx-data */}
-             <span>{props.t("Data Extraction")}</span>
-             </Link>
-           </li>
-
+        <li className="nav-item">
+  <Link to="/data-extraction" className="nav-link has-arrow">
+    <i className="bx bx-data"></i>
+    <span>{props.t("Data Extraction")}</span>
+  </Link>
+  <ul className="sub-menu" aria-expanded="false">
+    <li>
+      <Link to="/data-extraction/bank-statements" className="nav-link">
+        {props.t("View Processed Bank Statements")}
+      </Link>
+    </li>
+    <li>
+      <Link to="/data-extraction" className="nav-link">
+        {props.t("Extract My Data")}
+      </Link>
+    </li>
+  </ul>
+</li>
 
              <li>
               <Link to="/#" className="has-arrow ">

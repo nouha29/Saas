@@ -47,8 +47,12 @@ const ExtractionDashboard = () => {
     try {
       const formData = new FormData();
       formData.append("file", file);
+      console.log("Verifying template with file:", file.name);
       const response = await fetch("/api/verify-template", { method: "POST", body: formData });
-      if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+      console.log("Verify response status:", response.status);
+      const responseText = await response.clone().text();
+      console.log("Verify response text:", responseText);
+      if (!response.ok) throw new Error(`HTTP error! status: ${response.status} - ${responseText || "No details"}`);
       const status = await response.json();
       console.log("Template status:", status);
       setTemplateStatus(status);
@@ -80,54 +84,64 @@ const ExtractionDashboard = () => {
     setOpenCurrencyDialog(false);
   };
 
- const handleExtract = async () => {
-  if (!selectedFile || !selectedType || !selectedBank || !selectedCurrency) {
-    setError(new Error("Missing required fields: type, bank, or currency."));
-    return;
-  }
+  const handleExtract = async () => {
+    if (!selectedFile || !selectedType || !selectedBank || !selectedCurrency) {
+      setError(new Error("Missing required fields: type, bank, or currency."));
+      return;
+    }
 
-  setLoading(true);
-  const formData = new FormData();
-  formData.append("file", selectedFile);
-  formData.append("bank", selectedBank);
-  formData.append("currency", selectedCurrency);
-  formData.append("category", "Bank Statement");
-  formData.append("type", selectedType);
+    setLoading(true);
+    const formData = new FormData();
+    formData.append("file", selectedFile);
+    formData.append("bank", selectedBank);
+    formData.append("currency", selectedCurrency);
+    formData.append("category", "Bank Statement");
+    formData.append("type", selectedType);
 
-  try {
-    const response = await fetch("/api/extract-transactions", { method: "POST", body: formData });
-    console.log("Response status:", response.status);
-    const responseText = await response.clone().text();
-    console.log("Response text:", responseText);
-    if (!response.ok) throw new Error(`HTTP error! status: ${response.status} - ${responseText || "No details"}`);
-    const result = await response.json();
-    console.log("Extracted data:", result);
+    for (let [key, value] of formData.entries()) {
+      console.log(`FormData ${key}:`, value instanceof File ? value.name : value);
+    }
 
-    // Utiliser les valeurs telles que renvoyées par le backend sans inversion
-    const correctedData = result.result.transactions.map(tx => ({
-      ...tx,
-      date: tx.date ? tx.date.replace("2025", "2024") : "",
-      value_date: tx.date ? tx.date.replace("2025", "2024") : "", // Utilise date comme fallback
-      debit: tx.debit || 0, // Utiliser debit tel quel
-      credit: tx.credit || 0  // Utiliser credit tel quel
-    }));
+    try {
+      console.log("Fetching from:", "/api/extract-transactions");
+      const response = await fetch("/api/extract-transactions", {
+        method: "POST",
+        body: formData,
+        credentials: "include",
+      });
+      console.log("Response status:", response.status);
+      const responseText = await response.clone().text();
+      console.log("Response text:", responseText);
+      if (!response.ok) {
+        const errorDetail = responseText ? (JSON.parse(responseText).detail || responseText) : "No details";
+        throw new Error(`HTTP error! status: ${response.status} - ${errorDetail}`);
+      }
+      const result = await response.json();
+      console.log("Extracted data:", result);
 
-    // Recherche manuelle des soldes
-    const initialMatch = correctedData.find(tx => tx.label?.includes("SOLDE AU"));
-    const finalMatch = correctedData.find(tx => tx.label?.includes("SOLDE") && !tx.label.includes("AU"));
-    setSoldeInitial(initialMatch ? (initialMatch.debit || initialMatch.credit || null) : null);
-    setSoldeFinal(finalMatch ? (finalMatch.debit || finalMatch.credit || null) : null);
+      const correctedData = result.result.transactions.map(tx => ({
+        ...tx,
+        date: tx.date ? tx.date.replace("2025", "2024") : "",
+        value_date: tx.date ? tx.date.replace("2025", "2024") : "",
+        debit: tx.debit || 0,
+        credit: tx.credit || 0
+      }));
 
-    setData(correctedData);
-    setTotalDebit(correctedData.reduce((sum, tx) => sum + (tx.debit || 0), 0));
-    setTotalCredit(correctedData.reduce((sum, tx) => sum + (tx.credit || 0), 0));
-  } catch (error) {
-    console.error("Extract error:", error);
-    setError(error);
-  } finally {
-    setLoading(false);
-  }
-};
+      const initialMatch = correctedData.find(tx => tx.label?.includes("SOLDE AU"));
+      const finalMatch = correctedData.find(tx => tx.label?.includes("SOLDE") && !tx.label.includes("AU"));
+      setSoldeInitial(initialMatch ? (initialMatch.debit || initialMatch.credit || null) : null);
+      setSoldeFinal(finalMatch ? (finalMatch.debit || finalMatch.credit || null) : null);
+
+      setData(correctedData);
+      setTotalDebit(correctedData.reduce((sum, tx) => sum + (tx.debit || 0), 0));
+      setTotalCredit(correctedData.reduce((sum, tx) => sum + (tx.credit || 0), 0));
+    } catch (error) {
+      console.error("Extract error:", error);
+      setError(error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const calculateBalance = () => {
     if (data.length > 0) {
@@ -151,11 +165,36 @@ const ExtractionDashboard = () => {
   };
 
   const handleCellChange = (index, field, value) => {
-    const newData = [...data];
-    newData[index][field] = value || 0; // Gère les entrées vides
-    setData(newData);
-    setTotalDebit(newData.reduce((sum, tx) => sum + (tx.debit || 0), 0));
-    setTotalCredit(newData.reduce((sum, tx) => sum + (tx.credit || 0), 0));
+    try {
+      const newData = [...data];
+      const globalIndex = index + (currentPage - 1) * rowsPerPage; // Adjust for pagination
+
+      // Validate input based on field
+      if (field === "date" || field === "value_date") {
+        // Basic date format check (e.g., YYYY-MM-DD)
+        if (!/^\d{4}-\d{2}-\d{2}$/.test(value) && value !== "") {
+          throw new Error("Invalid date format. Use YYYY-MM-DD.");
+        }
+        newData[globalIndex][field] = value || "";
+      } else if (field === "debit" || field === "credit") {
+        // Ensure numeric or empty
+        const numValue = value === "" ? 0 : parseFloat(value);
+        if (isNaN(numValue) && value !== "") {
+          throw new Error("Debit and Credit must be numbers.");
+        }
+        newData[globalIndex][field] = numValue;
+      } else {
+        // Label can be any string
+        newData[globalIndex][field] = value || "";
+      }
+
+      setData(newData);
+      setTotalDebit(newData.reduce((sum, tx) => sum + (tx.debit || 0), 0));
+      setTotalCredit(newData.reduce((sum, tx) => sum + (tx.credit || 0), 0));
+    } catch (error) {
+      console.error("Cell change error:", error);
+      setError(error);
+    }
   };
 
   const exportToCSV = () => {
@@ -183,7 +222,6 @@ const ExtractionDashboard = () => {
   const currentData = filteredData.slice(indexOfFirstRow, indexOfLastRow);
   const totalPages = Math.ceil(filteredData.length / rowsPerPage);
 
-  // Afficher "-" pour les valeurs initiales nulles ou 0, sauf si modifiées
   const displayValue = (value) => (value === 0 || !value ? "-" : value);
 
   return (
@@ -239,7 +277,7 @@ const ExtractionDashboard = () => {
                         <input
                           type="text"
                           value={item.date || ""}
-                          onChange={(e) => handleCellChange(indexOfFirstRow + index, "date", e.target.value)}
+                          onChange={(e) => handleCellChange(index, "date", e.target.value)}
                           style={{ width: "100px" }}
                         />
                       </td>
@@ -247,7 +285,7 @@ const ExtractionDashboard = () => {
                         <input
                           type="text"
                           value={item.value_date || ""}
-                          onChange={(e) => handleCellChange(indexOfFirstRow + index, "value_date", e.target.value)}
+                          onChange={(e) => handleCellChange(index, "value_date", e.target.value)}
                           style={{ width: "100px" }}
                         />
                       </td>
@@ -255,7 +293,7 @@ const ExtractionDashboard = () => {
                         <input
                           type="text"
                           value={item.label || ""}
-                          onChange={(e) => handleCellChange(indexOfFirstRow + index, "label", e.target.value)}
+                          onChange={(e) => handleCellChange(index, "label", e.target.value)}
                           style={{ width: "200px" }}
                         />
                       </td>
@@ -263,7 +301,7 @@ const ExtractionDashboard = () => {
                         <input
                           type="number"
                           value={item.debit || ""}
-                          onChange={(e) => handleCellChange(indexOfFirstRow + index, "debit", e.target.value || 0)}
+                          onChange={(e) => handleCellChange(index, "debit", e.target.value)}
                           placeholder={displayValue(item.debit)}
                           style={{ width: "100px" }}
                         />
@@ -272,7 +310,7 @@ const ExtractionDashboard = () => {
                         <input
                           type="number"
                           value={item.credit || ""}
-                          onChange={(e) => handleCellChange(indexOfFirstRow + index, "credit", e.target.value || 0)}
+                          onChange={(e) => handleCellChange(index, "credit", e.target.value)}
                           placeholder={displayValue(item.credit)}
                           style={{ width: "100px" }}
                         />
@@ -334,7 +372,6 @@ const ExtractionDashboard = () => {
             <p>No data extracted yet.</p>
           )}
 
-          {/* Dialogues simples */}
           {openTypeDialog && (
             <div className="modal" style={{ display: "block", position: "fixed", top: 0, left: 0, right: 0, bottom: 0, background: "rgba(0,0,0,0.5)" }}>
               <div className="modal-content" style={{ background: "#fff", margin: "15% auto", padding: "20px", width: "300px" }}>
