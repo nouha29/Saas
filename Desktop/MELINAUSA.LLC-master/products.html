@@ -1,0 +1,2199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Products — MELINAUSA LLC</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+
+  <!-- mêmes dépendances que Home -->
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/open-iconic-bootstrap.min.css">
+  <link rel="stylesheet" href="css/bootstrap-datepicker.css">
+  <link rel="stylesheet" href="css/style.css">
+
+  <style>
+    :root{ --brown:#4C3A2F; --sand:#F6F3EC; --shadow:0 18px 34px rgba(0,0,0,.12); --radius:16px; }
+    html{ scroll-behavior:smooth; }
+    body{ font-family:"Manrope",system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial,sans-serif; }
+    h1,h2,h3{ font-family:"Cormorant Garamond",serif; color:var(--brown); }
+
+    /* NAV */
+    .navbar-clean{ background:#F6F3EC; border-bottom:1px solid rgba(0,0,0,.06); padding:.45rem 0; }
+    .brand-wordmark{ font-weight:700; color:var(--brown)!important; font-family:"Cormorant Garamond",serif; }
+    .navbar .navbar-nav{ margin-left:auto !important; }
+    .main-menu .nav-item + .nav-item{ margin-left:22px; }
+    .main-menu .nav-link{ color:#4C3A2F!important; font-weight:600; letter-spacing:.02em; padding:1rem .75rem; }
+    /* caret propre uniquement sur split */
+    .nav-item.dropdown > .nav-link::after, .navbar .dropdown-toggle::after{ display:none!important; }
+    .dropdown-toggle-split::after{ content:"▾"; margin-left:.28rem; opacity:.75; }
+    @media (min-width:992px){ .dropdown-split:hover .dropdown-menu{ display:block; } }
+
+    /* HERO */
+    .hero-products{
+      background:linear-gradient(90deg,#f7f3ed 40%,rgba(247,243,237,0) 55%), url('images/tv.jpg') center/cover no-repeat;
+      min-height:48vh; display:flex; align-items:center; border-bottom:1px solid rgba(0,0,0,.06);
+    }
+    .hero-products .lead{ max-width:640px; color:#5a5a5a; }
+
+    .container-narrow{ max-width:1100px; margin:0 auto; }
+
+    /* Pills catégories */
+    .cat-pills{ background:#fff; position:sticky; top:64px; z-index:10; border-bottom:1px solid rgba(0,0,0,.06); }
+    @media (max-width:991.98px){ .cat-pills{ top:56px; } }
+    .cat-pills .wrap{ display:flex; gap:10px; overflow:auto; padding:12px 0; scrollbar-width:none; }
+    .cat-pills .wrap::-webkit-scrollbar{ display:none; }
+    .cat-pill{
+      white-space:nowrap; background:#fff; border:1px solid rgba(0,0,0,.12);
+      padding:.4rem .75rem; border-radius:999px; color:#2b2b2b; font-weight:600; text-decoration:none;
+    }
+    .cat-pill:hover{ background:#efeade; color:var(--brown); }
+
+    /* Sections produits */
+    .section-products{ padding:48px 0; background:#fff; scroll-margin-top:110px; }
+    .section-products + .section-products{ border-top:1px solid rgba(0,0,0,.06); }
+    .section-products h2{
+      font-family:"Cormorant Garamond",serif; font-weight:700; color:#4C3A2F;
+      letter-spacing:.02em; margin:18px 0 14px;
+    }
+
+    /* Slider horizontal cartes */
+    .cards-slider{ position:relative; }
+    .cards-slider .cards-track{
+      display:flex; gap:16px; overflow-x:auto; overscroll-behavior-x:contain;
+      scroll-snap-type:x mandatory; padding:4px 46px 10px;
+    }
+    .cards-slider .cards-track::-webkit-scrollbar{ height:8px; }
+    .cards-slider .cards-track::-webkit-scrollbar-thumb{ background:rgba(0,0,0,.12); border-radius:999px; }
+    .card-wrap{ flex:0 0 auto; width:clamp(220px, 24vw, 280px); scroll-snap-align:start; }
+    .cards-arrow{
+      position:absolute; top:50%; transform:translateY(-50%);
+      width:38px; height:38px; border-radius:50%; background:#fff; border:1px solid rgba(0,0,0,.12);
+      box-shadow:0 8px 18px rgba(0,0,0,.08); display:grid; place-items:center; font-weight:800; cursor:pointer;
+    }
+    .cards-arrow.prev{ left:4px; } .cards-arrow.next{ right:4px; }
+    @media (max-width:576px){ .cards-arrow{ display:none; } }
+
+    /* Cartes produit */
+    .product-card{
+      background:#fff; border:1px solid rgba(0,0,0,.06); border-radius:14px; overflow:hidden;
+      box-shadow:0 10px 18px rgba(0,0,0,.06); height:100%; display:flex; flex-direction:column;
+    }
+    .product-card img{ width:100%; height:230px; object-fit:cover; }
+    .product-card .body{ padding:12px 14px 14px; display:flex; flex-direction:column; gap:6px; }
+    .product-card h6{ margin:0; font-weight:700; color:#4C3A2F; }
+    .product-card .meta{ font-size:14px; color:#6b5a51; }
+    .product-card .actions{ margin-top:auto; }
+
+    /* ===== Modals unifiés (une seule “planche 4-en-1”) ===== */
+    .model-modal .modal-content{ border:0; border-radius:18px; overflow:hidden; }
+    .model-modal .modal-header{ border:0; padding:16px 18px 0; }
+    .model-modal .modal-title{ font-family:"Cormorant Garamond",serif; font-weight:700; color:#4C3A2F; }
+    .model-modal figure{ margin:0; }
+    .model-modal .sheet-wrap{ display:flex; justify-content:center; padding:6px 0 0; }
+    .model-modal .sheet-img{
+      width:auto; max-width:100%;
+      height:auto; max-height:62vh;      /* ← réduit la taille dans le modal */
+      object-fit:contain;                 /* jamais rognée */
+    }
+    @media (max-width:991.98px){
+      .model-modal .sheet-img{ max-height:52vh; }  /* un peu plus petit sur mobile */
+    }
+    .model-modal .specs{ margin:10px 0 0; padding-left:18px; }
+    .model-modal .specs li{ margin:.25rem 0; font-weight:600; color:#353535; }
+    .model-modal .specs em{ font-style:normal; color:#6b5a51; font-weight:700; }
+
+    /* thumbs si tu en utilises ailleurs */
+    .thumb-grid{ display:grid; gap:12px; grid-template-columns:repeat(4,1fr); }
+    .thumb-grid a, .thumb-grid figure{
+      display:block; width:100%; aspect-ratio:1/1; border-radius:14px; overflow:hidden;
+      background:#f6f3ec; box-shadow:0 8px 18px rgba(0,0,0,.06);
+    }
+    .thumb-grid img{ width:100%; height:100%; object-fit:cover; transform:scale(1.02); transition:transform .35s; }
+    .thumb-grid a:hover img{ transform:scale(1.08); }
+    @media (max-width: 991.98px){ .thumb-grid{ grid-template-columns:repeat(2,1fr);} }
+    @media (max-width: 480px){ .thumb-grid{ grid-template-columns:1fr 1fr;} }
+
+    /* footer */
+    .site-footer{ background:#fff; border-top:1px solid rgba(0,0,0,.06); padding:24px 0; text-align:center; color:#6b5a51; }
+    .site-footer a{ color:#6b5a51; font-weight:600; }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="navbar navbar-expand-lg navbar-light navbar-clean sticky-top" id="ftco-navbar">
+  <div class="container container-narrow align-items-center">
+    <a class="navbar-brand brand-wordmark" href="index.html">MELINAUSA <strong>LLC</strong></a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#ftco-nav"
+            aria-controls="ftco-nav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="oi oi-menu"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="ftco-nav">
+      <ul class="navbar-nav main-menu">
+        <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+        <li class="nav-item"><a class="nav-link" href="products.html">Products</a></li>
+        <li class="nav-item"><a class="nav-link" href="services.html">Services</a></li>
+         <li class="nav-item"><a class="nav-link" href="about.html">About Us</a></li>
+        <li class="nav-item"><a class="nav-link" href="contact.html">Contact</a></li>
+       
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<header class="hero-products">
+  <div class="container container-narrow">
+    <h1 class="mb-2" style="font-size:clamp(34px,4.6vw,58px); line-height:1.05;">Our Collection</h1>
+    <p class="lead mb-0">Each piece is crafted with care, blending timeless aesthetics with everyday usability.</p>
+  </div>
+</header>
+
+<!-- PILLS catégories -->
+<div class="cat-pills">
+  <div class="container container-narrow">
+    <div class="wrap">
+      <a class="cat-pill" href="#bookshelves">Book Shelfs</a>
+      <a class="cat-pill" href="#chairs">Chair</a>
+      <a class="cat-pill" href="#coffee-tables">Coffee Table</a>
+      <a class="cat-pill" href="#consoles">Console</a>
+      <a class="cat-pill" href="#dining-tables">Dining Table</a>
+      <a class="cat-pill" href="#makeup-tables">Make-up Table</a>
+      <a class="cat-pill" href="#multi-cabinets">Multi Cabinet</a>
+      <a class="cat-pill" href="#nesting-tables">Nesting Table</a>
+      <a class="cat-pill" href="#shoe-cabinets">Shoe Cabinet</a>
+      <a class="cat-pill" href="#study-desks">Study Desk</a>
+      <a class="cat-pill" href="#tv-units">TV Unit</a>
+    </div>
+  </div>
+</div>
+
+<!-- =================== SECTIONS =================== -->
+
+<!-- ===== BOOKSHELVES ===== -->
+<section id="bookshelves" class="section-products">
+  <div class="container container-narrow">
+    <h2>Book Shelfs</h2>
+
+    <div class="cards-slider" id="books-slider">
+      <button class="cards-arrow prev" aria-label="Previous">‹</button>
+      <div class="cards-track">
+
+        <!-- CROTONE -->
+        <div class="card-wrap">
+          <div class="product-card">
+            <img src="images/bookshelves/crotone/crotone1.PNG" alt="CROTONE Bookshelf">
+            <div class="body">
+              <h6>CROTONE Bookshelf (Oak)</h6>
+              <div class="meta">(OAK)</div>
+              <div class="actions">
+                <a class="btn btn-sm btn-outline-dark" data-toggle="modal" data-target="#mdl-bs-crotone">Details</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ENZAMU -->
+        <div class="card-wrap">
+          <div class="product-card">
+            <img src="images/bookshelves/enzamu/enzamu 1.PNG" alt="ENZAMU Bookshelf">
+            <div class="body">
+              <h6>ENZAMU Bookshelf</h6>
+              <div class="meta">(White)</div>
+              <div class="actions">
+                <a class="btn btn-sm btn-outline-dark" data-toggle="modal" data-target="#mdl-bs-enzamu">Details</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- POTENZA -->
+        <div class="card-wrap">
+          <div class="product-card">
+            <img src="images/bookshelves/potenza/potenza1.PNG" alt="POTENZA Bookshelf">
+            <div class="body">
+              <h6>POTENZA Bookshelf</h6>
+              <div class="meta">(OAK/White)</div>
+              <div class="actions">
+                <a class="btn btn-sm btn-outline-dark" data-toggle="modal" data-target="#mdl-bs-potenza">Details</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SEMM -->
+        <div class="card-wrap">
+          <div class="product-card">
+            <img src="images/bookshelves/semm/semm1.PNG" alt="SEMM Bookshelf">
+            <div class="body">
+              <h6>SEMM Bookshelf</h6>
+              <div class="meta">(OAK/White)</div>
+              <div class="actions">
+                <a class="btn btn-sm btn-outline-dark" data-toggle="modal" data-target="#mdl-bs-semm">Details</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <button class="cards-arrow next" aria-label="Next">›</button>
+    </div>
+  </div>
+</section>
+
+<!-- ===== Modals Bookshelves (UNE image “sheet”) ===== -->
+<!-- CROTONE -->
+<div class="modal fade model-modal" id="mdl-bs-crotone" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered"><div class="modal-content">
+    <div class="modal-header">
+      <h5 class="modal-title">CROTONE Bookshelf (Oak)</h5>
+      <button type="button" class="close" data-dismiss="modal"><span>×</span></button>
+    </div>
+    <div class="modal-body">
+      <figure class="sheet-wrap">
+        <img class="sheet-img" src="images/bookshelves/crotonekol.PNG" alt="CROTONE 4-in-1 views">
+      </figure>
+      <ul class="specs">
+        <li>Material: <em>100% melamine-coated particle board</em></li>
+        <li>Thickness: <em>18&nbsp;mm</em></li>
+        <li>Dimensions: <em>W 90&nbsp;cm × H 165.5&nbsp;cm × D 25&nbsp;cm</em></li>
+        <li>Legs: <em>Wheeled</em></li>
+        <li>Numerous shelves; <em>can be fixed to the wall</em></li>
+      </ul>
+    </div>
+  </div></div>
+</div>
+
+<!-- ENZAMU -->
+<div class="modal fade model-modal" id="mdl-bs-enzamu" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered"><div class="modal-content">
+    <div class="modal-header">
+      <h5 class="modal-title">ENZAMU Bookshelf</h5>
+      <button type="button" class="close" data-dismiss="modal"><span>×</span></button>
+    </div>
+    <div class="modal-body">
+      <figure class="sheet-wrap">
+        <img class="sheet-img" src="images/bookshelves/enzamu kol.PNG" alt="ENZAMU Bookshelf – views">
+      </figure>
+      <ul class="specs">
+        <li>Material: <em>100% melamine-coated particle board</em></li>
+        <li>Thickness: <em>18 mm</em></li>
+        <li>Legs: <em>Plastic, height 12 cm</em></li>
+        <li>Dimensions: <em>W 50 × H 162 × D 25 cm</em></li>
+        <li>Numerous shelves; <em>can be fixed to the wall</em></li>
+      </ul>
+    </div>
+  </div></div>
+</div>
+
+
+<!-- POTENZA -->
+<div class="modal fade model-modal" id="mdl-bs-potenza" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered"><div class="modal-content">
+    <div class="modal-header">
+      <h5 class="modal-title">POTENZA Bookshelf</h5>
+      <button type="button" class="close" data-dismiss="modal"><span>×</span></button>
+    </div>
+    <div class="modal-body">
+      <figure class="sheet-wrap">
+        <img class="sheet-img" src="images/bookshelves/potenzakol.PNG" alt="POTENZA 4-in-1 views">
+      </figure>
+      <ul class="specs">
+        <li>Material: <em>100% melamine-coated particle board</em></li>
+        <li>Thickness: <em>18&nbsp;mm</em></li>
+        <li>Configuration: <em>2 pieces</em> (each W 50&nbsp;cm × H 162&nbsp;cm × D 25&nbsp;cm)</li>
+        <li>Total size: <em>W 100&nbsp;cm × H 162&nbsp;cm × D 25&nbsp;cm</em></li>
+        <li>Legs: <em>Plastic, 12&nbsp;cm height</em></li>
+      </ul>
+    </div>
+  </div></div>
+</div>
+
+<!-- SEMM -->
+<div class="modal fade model-modal" id="mdl-bs-semm" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered"><div class="modal-content">
+    <div class="modal-header">
+      <h5 class="modal-title">SEMM Bookshelf</h5>
+      <button type="button" class="close" data-dismiss="modal"><span>×</span></button>
+    </div>
+    <div class="modal-body">
+      <figure class="sheet-wrap">
+        <img class="sheet-img" src="images/bookshelves/semmkol.PNG" alt="SEMM 4-in-1 views">
+      </figure>
+      <ul class="specs">
+        <li>Material: <em>100% melamine-coated particle board</em></li>
+        <li>Thickness: <em>18&nbsp;mm</em></li>
+        <li>Configuration: <em>4 pieces</em> (each W 33.6&nbsp;cm × H 180&nbsp;cm × D 25&nbsp;cm)</li>
+        <li>Total size: <em>W 134.4&nbsp;cm × H 180&nbsp;cm × D 25&nbsp;cm</em></li>
+      </ul>
+    </div>
+  </div></div>
+</div>
+
+<!-- ===== CHAIR (inchangé) ===== -->
+<!-- ===== CHAIRS ===== -->
+<section id="chairs" class="section-products">
+  <div class="container container-narrow">
+    <h2>Chair</h2>
+
+    <div class="row g-3">
+      <!-- ALYA -->
+      <div class="col-6 col-lg-3">
+        <div class="product-card">
+          <img src="images/chairs/ALYA CHAIRS SET.jpg" alt="ALYA Chairs Set">
+          <div class="body">
+            <h6>ALYA Chairs Set</h6>
+            <div class="meta">4 chairs • Scandinavian look</div>
+            <div class="actions">
+              <a class="btn btn-sm btn-outline-dark" data-toggle="modal" data-target="#mdl-ch-alya">Details</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ISTANBUL -->
+      <div class="col-6 col-lg-3">
+        <div class="product-card">
+          <img src="images/chairs/ISTANBUL CHAIRS SET.jpg" alt="ISTANBUL Chairs Set">
+          <div class="body">
+            <h6>ISTANBUL Chairs Set</h6>
+            <div class="meta">Velvet seat • Black/wood mix</div>
+            <div class="actions">
+              <a class="btn btn-sm btn-outline-dark" data-toggle="modal" data-target="#mdl-ch-istanbul">Details</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- YELLOW -->
+      <div class="col-6 col-lg-3">
+        <div class="product-card">
+          <img src="images/chairs/YELLOW CHAIRS SET.jpg" alt="YELLOW Chairs Set">
+          <div class="body">
+            <h6>YELLOW Chairs Set</h6>
+            <div class="meta">Solid beech look • Cozy</div>
+            <div class="actions">
+              <a class="btn btn-sm btn-outline-dark" data-toggle="modal" data-target="#mdl-ch-yellow">Details</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ===== Modals Chairs (une image “sheet” / taille réduite) ===== -->
+<!-- ALYA -->
+<div class="modal fade model-modal" id="mdl-ch-alya" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered"><div class="modal-content">
+    <div class="modal-header">
+      <h5 class="modal-title">ALYA Chairs Set</h5>
+      <button type="button" class="close" data-dismiss="modal"><span>×</span></button>
+    </div>
+    <div class="modal-body">
+      <figure class="sheet-wrap">
+        <img class="sheet-img" src="images/chairs/ALYA CHAIRS SET.jpg" alt="ALYA Chairs Set – views">
+      </figure>
+      <ul class="specs">
+        <li>Material: <em>Wood frame, fabric seat</em></li>
+        <li>Finish: <em>Natural wood</em></li>
+        <li>Set: <em>Table + 4 chairs</em></li>
+
+      </ul>
+    </div>
+  </div></div>
+</div>
+
+<!-- ISTANBUL -->
+<div class="modal fade model-modal" id="mdl-ch-istanbul" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered"><div class="modal-content">
+    <div class="modal-header">
+      <h5 class="modal-title">ISTANBUL Chairs Set</h5>
+      <button type="button" class="close" data-dismiss="modal"><span>×</span></button>
+    </div>
+    <div class="modal-body">
+      <figure class="sheet-wrap">
+        <img class="sheet-img" src="images/chairs/ISTANBUL CHAIRS SET.jpg" alt="ISTANBUL Chairs Set – views">
+      </figure>
+      <ul class="specs">
+        <li>Material: <em>Wood, velvet seat/back</em></li>
+        <li>Top (table): <em>Black marble look</em></li>
+        <li>Base: <em>Cross metal legs</em></li>
+       
+      </ul>
+    </div>
+  </div></div>
+</div>
+
+<!-- YELLOW -->
+<div class="modal fade model-modal" id="mdl-ch-yellow" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered"><div class="modal-content">
+    <div class="modal-header">
+      <h5 class="modal-title">YELLOW Chairs Set</h5>
+      <button type="button" class="close" data-dismiss="modal"><span>×</span></button>
+    </div>
+    <div class="modal-body">
+      <figure class="sheet-wrap">
+        <img class="sheet-img" src="images/chairs/YELLOW CHAIRS SET.jpg" alt="YELLOW Chairs Set – views">
+      </figure>
+      <ul class="specs">
+        <li>Material: <em>Solid wood look, fabric seat</em></li>
+        <li>Style: <em>Warm natural tones</em></li>
+        <li>Set: <em>Table + 6 chairs </em></li>
+      </ul>
+    </div>
+  </div></div>
+</div>
+
+
+<!-- ===== COFFEE TABLES ===== -->
+<section id="coffee-tables" class="section-products">
+  <div class="container container-narrow">
+    <h2>Coffee Table</h2>
+
+    <div class="cards-slider" id="coffee-slider">
+      <button class="cards-arrow prev" aria-label="Previous">‹</button>
+      <div class="cards-track">
+
+        <div class="card-wrap">
+          <div class="product-card">
+            <img src="images/coffetable/antiqua.PNG" alt="ANTIQUA Coffee Table">
+            <div class="body">
+              <h6>ANTIQUA Coffee Table</h6>
+              <div class="meta">(Gold/Black)</div>
+              <div class="actions"><a class="btn btn-sm btn-outline-dark" data-toggle="modal" data-target="#mdl-coffee-antiqua">Details</a></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card-wrap">
+          <div class="product-card">
+            <img src="images/coffetable/skull1.PNG" alt="SKULL Coffee Table">
+            <div class="body">
+              <h6>SKULL Coffee Table</h6>
+              <div class="meta">(OAK/White)</div>
+              <div class="actions"><a class="btn btn-sm btn-outline-dark" data-toggle="modal" data-target="#mdl-coffee-skull">Details</a></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card-wrap">
+          <div class="product-card">
+            <img src="images/coffetable/brida/brida1.PNG" alt="BRIDA Coffee Table">
+            <div class="body">
+              <h6>BRIDA Coffee Table</h6>
+              <div class="meta">(OAK/Concrete)</div>
+              <div class="actions"><a class="btn btn-sm btn-outline-dark" data-toggle="modal" data-target="#mdl-coffee-brida">Details</a></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card-wrap">
+          <div class="product-card">
+            <img src="images/coffetable/gross/gross1.PNG" alt="GROSS Coffee Table">
+            <div class="body">
+              <h6>GROSS Coffee Table</h6>
+              <div class="meta">(White)</div>
+              <div class="actions"><a class="btn btn-sm btn-outline-dark" data-toggle="modal" data-target="#mdl-coffee-gross">Details</a></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card-wrap">
+          <div class="product-card">
+            <img src="images/coffetable/loop.PNG" alt="LOOP Coffee Table">
+            <div class="body">
+              <h6>LOOP Coffee Table</h6>
+              <div class="meta">(Black)</div>
+              <div class="actions"><a class="btn btn-sm btn-outline-dark" data-toggle="modal" data-target="#mdl-coffee-loop">Details</a></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card-wrap">
+          <div class="product-card">
+            <img src="images/coffetable/nuguso1.PNG" alt="NUGUSO Coffee Table">
+            <div class="body">
+              <h6>NUGUSO Coffee Table</h6>
+              <div class="meta">(OAK/White)</div>
+              <div class="actions"><a class="btn btn-sm btn-outline-dark" data-toggle="modal" data-target="#mdl-coffee-nuguso">Details</a></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card-wrap">
+          <div class="product-card">
+            <img src="images/coffetable/silla1.PNG" alt="SILLA Coffee Table">
+            <div class="body">
+              <h6>SILLA Coffee Table</h6>
+              <div class="meta">(OAK/White)</div>
+              <div class="actions"><a class="btn btn-sm btn-outline-dark" data-toggle="modal" data-target="#mdl-coffee-silla">Details</a></div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <button class="cards-arrow next" aria-label="Next">›</button>
+    </div>
+  </div>
+</section>
+
+<!-- ===== Modals Coffee (UNE image) ===== -->
+<div class="modal fade model-modal" id="mdl-coffee-antiqua" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered"><div class="modal-content">
+    <div class="modal-header">
+      <h5 class="modal-title">ANTIQUA Coffee Table</h5>
+      <button type="button" class="close" data-dismiss="modal"><span>×</span></button>
+    </div>
+    <div class="modal-body">
+      <figure class="sheet-wrap">
+        <img class="sheet-img" src="images/coffetable/antiqua1.PNG" alt="ANTIQUA 4-in-1 views">
+      </figure>
+      <ul class="specs">
+        <li>Material: <em>100% melamine-coated particle board</em></li>
+        <li>Thickness: <em>18&nbsp;mm</em></li>
+        <li>Dimensions: <em>W 100&nbsp;cm × H 42&nbsp;cm × D 60&nbsp;cm</em></li>
+      </ul>
+    </div>
+  </div></div>
+</div>
+
+<div class="modal fade model-modal" id="mdl-coffee-skull" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered"><div class="modal-content">
+    <div class="modal-header"><h5 class="modal-title">SKULL Coffee Table</h5>
+      <button type="button" class="close" data-dismiss="modal"><span>×</span></button></div>
+    <div class="modal-body">
+      <figure class="sheet-wrap"><img class="sheet-img" src="images/coffetable/skull.PNG" alt="SKULL 4-in-1 views"></figure>
+      <ul class="specs">
+        <li>Material: <em>100% melamine-coated particle board</em></li>
+        <li>Thickness: <em>18&nbsp;mm</em></li>
+        <li>Legs: <em>Plastic</em></li>
+        <li>Dimensions: <em>W 80&nbsp;cm × H 40&nbsp;cm × D 80&nbsp;cm</em></li>
+        <li>Storage: <em>Open shelf</em></li>
+      </ul>
+    </div>
+  </div></div>
+</div>
+
+<!-- BRIDA -->
+<div class="modal fade model-modal" id="mdl-coffee-brida" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered"><div class="modal-content">
+    <div class="modal-header"><h5 class="modal-title">BRIDA Coffee Table</h5>
+      <button type="button" class="close" data-dismiss="modal"><span>×</span></button></div>
+    <div class="modal-body">
+      <figure class="sheet-wrap"><img class="sheet-img" src="images/coffetable/bridakol.PNG" alt="BRIDA Coffee Table – views"></figure>
+      <ul class="specs">
+        <li>Material: <em>100% melamine-coated particle board</em></li>
+        <li>Thickness: <em>18 mm</em></li>
+        <li>Handle: <em>PU leather</em></li>
+        <li>Legs: <em>Wooden</em></li>
+        <li>Dimensions: <em>W 80 × H 40 × D 80 cm</em></li>
+        <li>Features: <em>2 drawers; 2-tier coffee table</em></li>
+      </ul>
+    </div>
+  </div></div>
+</div>
+
+<!-- GROSS -->
+<div class="modal fade model-modal" id="mdl-coffee-gross" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered"><div class="modal-content">
+    <div class="modal-header"><h5 class="modal-title">GROSS Coffee Table</h5>
+      <button type="button" class="close" data-dismiss="modal"><span>×</span></button></div>
+    <div class="modal-body">
+      <figure class="sheet-wrap"><img class="sheet-img" src="images/coffetable/grosskol.PNG" alt="GROSS Coffee Table – views"></figure>
+      <ul class="specs">
+        <li>Material: <em>100% melamine-coated particle board</em></li>
+        <li>Thickness: <em>18 mm</em></li>
+        <li>Legs: <em>Wooden</em></li>
+        <li>Dimensions: <em>W 80 × H 48.8 × D 45 cm</em></li>
+      </ul>
+    </div>
+  </div></div>
+</div>
+
+<!-- LOOP -->
+<div class="modal fade model-modal" id="mdl-coffee-loop" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered"><div class="modal-content">
+    <div class="modal-header"><h5 class="modal-title">LOOP Coffee Table</h5>
+      <button type="button" class="close" data-dismiss="modal"><span>×</span></button></div>
+    <div class="modal-body">
+      <figure class="sheet-wrap"><img class="sheet-img" src="images/coffetable/loop.PNG" alt="LOOP Coffee Table – views"></figure>
+      <ul class="specs">
+        <li>Material: <em>100% melamine-coated particle board</em></li>
+        <li>Thickness: <em>18 mm</em></li>
+        <li>Dimensions: <em>W 100 × H 41.5 × D 60 cm</em></li>
+      </ul>
+    </div>
+  </div></div>
+</div>
+
+<!-- NUGUSO -->
+<div class="modal fade model-modal" id="mdl-coffee-nuguso" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered"><div class="modal-content">
+    <div class="modal-header"><h5 class="modal-title">NUGUSO Coffee Table</h5>
+      <button type="button" class="close" data-dismiss="modal"><span>×</span></button></div>
+    <div class="modal-body">
+      <figure class="sheet-wrap"><img class="sheet-img" src="images/coffetable/nuguso.PNG" alt="NUGUSO Coffee Table – views"></figure>
+      <ul class="specs">
+        <li>Material: <em>100% melamine-coated particle board</em></li>
+        <li>Thickness: <em>18 mm</em></li>
+        <li>Dimensions (Large): <em>W 90 × H 42 × D 40 cm</em></li>
+        <li>Dimensions (Small): <em>W 45 × H 44 × D 40 cm</em></li>
+      </ul>
+    </div>
+  </div></div>
+</div>
+
+<!-- SILLA -->
+<div class="modal fade model-modal" id="mdl-coffee-silla" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered"><div class="modal-content">
+    <div class="modal-header"><h5 class="modal-title">SILLA Coffee Table</h5>
+      <button type="button" class="close" data-dismiss="modal"><span>×</span></button></div>
+    <div class="modal-body">
+      <figure class="sheet-wrap"><img class="sheet-img" src="images/coffetable/silla.PNG" alt="SILLA Coffee Table – views"></figure>
+      <ul class="specs">
+        <li>Material: <em>100% melamine-coated particle board</em></li>
+        <li>Thickness: <em>18 mm</em></li>
+        <li>Legs: <em>Plastic</em></li>
+        <li>Dimensions: <em>W 80 × H 40 × D 80 cm</em></li>
+        <li>Features: <em>1 drawer; 2-tier coffee table</em></li>
+      </ul>
+    </div>
+  </div></div>
+</div>
+
+<!-- ===== autres sections (Dining / Makeup / Cabinets / Nesting / Shoe / Desk / TV) inchangées ===== -->
+
+
+<!-- ===== CONSOLES ===== -->
+<section id="consoles" class="section-products">
+  <div class="container container-narrow">
+    <h2>Console</h2>
+
+    <div class="cards-slider" id="console-slider">
+      <button class="cards-arrow prev" aria-label="Previous">‹</button>
+      <div class="cards-track">
+
+        <!-- INDIRE -->
+        <div class="card-wrap">
+          <div class="product-card">
+            <img src="images/console/indira.PNG" alt="INDIRE Console">
+            <div class="body">
+              <h6>INDIRE Console</h6>
+              <div class="meta">(OAK/White)</div>
+              <div class="actions">
+                <a class="btn btn-sm btn-outline-dark" data-toggle="modal" data-target="#mdl-cs-indire">Details</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- LUGANO -->
+        <div class="card-wrap">
+          <div class="product-card">
+            <img src="images/console/lugano.png" alt="LUGANO Console">
+            <div class="body">
+              <h6>LUGANO Console</h6>
+              <div class="meta">(White)</div>
+              <div class="actions">
+                <a class="btn btn-sm btn-outline-dark" data-toggle="modal" data-target="#mdl-cs-lugano">Details</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- PAGINA -->
+        <div class="card-wrap">
+          <div class="product-card">
+            <img src="images/console/pagina.png" alt="PAGINA Console">
+            <div class="body">
+              <h6>PAGINA Console</h6>
+              <div class="meta">(OAK/Dark Concrete)</div>
+              <div class="actions">
+                <a class="btn btn-sm btn-outline-dark" data-toggle="modal" data-target="#mdl-cs-pagina">Details</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- PEKIN -->
+        <div class="card-wrap">
+          <div class="product-card">
+            <img src="images/console/pekin.png" alt="PEKIN Console">
+            <div class="body">
+              <h6>PEKIN Console</h6>
+              <div class="meta">(OAK)</div>
+              <div class="actions">
+                <a class="btn btn-sm btn-outline-dark" data-toggle="modal" data-target="#mdl-cs-pekin">Details</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SUDER -->
+        <div class="card-wrap">
+          <div class="product-card">
+            <img src="images/console/suder.png" alt="SUDER Console">
+            <div class="body">
+              <h6>SUDER Console</h6>
+              <div class="meta">(OAK/Yellow)</div>
+              <div class="actions">
+                <a class="btn btn-sm btn-outline-dark" data-toggle="modal" data-target="#mdl-cs-suder">Details</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- UTAH -->
+        <div class="card-wrap">
+          <div class="product-card">
+            <img src="images/console/utah.png" alt="UTAH Console">
+            <div class="body">
+              <h6>UTAH Console</h6>
+              <div class="meta">(Gold OAK/Yellow)</div>
+              <div class="actions">
+                <a class="btn btn-sm btn-outline-dark" data-toggle="modal" data-target="#mdl-cs-utah">Details</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- VEIT -->
+        <div class="card-wrap">
+          <div class="product-card">
+            <img src="images/console/veit.png" alt="VEIT Console">
+            <div class="body">
+              <h6>VEIT Console</h6>
+              <div class="meta">(OAK/Black)</div>
+              <div class="actions">
+                <a class="btn btn-sm btn-outline-dark" data-toggle="modal" data-target="#mdl-cs-veit">Details</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- BOTH -->
+        <div class="card-wrap">
+          <div class="product-card">
+            <img src="images/console/bothconsole.PNG" alt="BOTH Console">
+            <div class="body">
+              <h6>BOTH Console</h6>
+              <div class="meta">(OAK)</div>
+              <div class="actions">
+                <a class="btn btn-sm btn-outline-dark" data-toggle="modal" data-target="#mdl-cs-both">Details</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <button class="cards-arrow next" aria-label="Next">›</button>
+    </div>
+  </div>
+</section>
+
+<!-- ===== Modals Console (une image “sheet”) ===== -->
+
+<!-- INDIRE -->
+<div class="modal fade model-modal" id="mdl-cs-indire" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered"><div class="modal-content">
+    <div class="modal-header"><h5 class="modal-title">INDIRE Console</h5>
+      <button type="button" class="close" data-dismiss="modal"><span>×</span></button></div>
+    <div class="modal-body">
+      <figure class="sheet-wrap"><img class="sheet-img" src="images/console/indirakol.PNG" alt="INDIRE Console – views"></figure>
+      <ul class="specs">
+        <li>Material: <em>100% melamine-coated particle board</em></li>
+        <li>Thickness: <em>18&nbsp;mm</em></li>
+        <li>Handle: <em>PU leather</em> • Legs: <em>Wood</em></li>
+        <li>Size: <em>W 120&nbsp;cm × H 80&nbsp;cm × D 40&nbsp;cm</em></li>
+        <li>Drawer width: <em>35&nbsp;cm</em> • Middle shelf width: <em>55&nbsp;cm</em></li>
+        <li>Storage: <em>3 drawers • Numerous shelves</em> • Wall-fixable</li>
+      </ul>
+    </div>
+  </div></div>
+</div>
+
+<!-- LUGANO -->
+<div class="modal fade model-modal" id="mdl-cs-lugano" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered"><div class="modal-content">
+    <div class="modal-header"><h5 class="modal-title">LUGANO Console</h5>
+      <button type="button" class="close" data-dismiss="modal"><span>×</span></button></div>
+    <div class="modal-body">
+      <figure class="sheet-wrap"><img class="sheet-img" src="images/console/luganokol.png" alt="LUGANO Console – views"></figure>
+      <ul class="specs">
+        <li>Material: <em>100% melamine-coated particle board</em> • Thickness <em>18&nbsp;mm</em></li>
+        <li>Legs: <em>Plastic</em></li>
+        <li>Size: <em>W 150&nbsp;cm × H 40&nbsp;cm × D 62&nbsp;cm</em></li>
+        <li>Numerous shelves • Wall-fixable</li>
+      </ul>
+    </div>
+  </div></div>
+</div>
+
+<!-- PAGINA -->
+<div class="modal fade model-modal" id="mdl-cs-pagina" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered"><div class="modal-content">
+    <div class="modal-header"><h5 class="modal-title">PAGINA Console</h5>
+      <button type="button" class="close" data-dismiss="modal"><span>×</span></button></div>
+    <div class="modal-body">
+      <figure class="sheet-wrap"><img class="sheet-img" src="images/console/paginakol.png" alt="PAGINA Console – views"></figure>
+      <ul class="specs">
+        <li>Material: <em>100% melamine-coated particle board</em> • Thickness <em>18&nbsp;mm</em></li>
+        <li>Handle: <em>PU leather</em> • Legs: <em>Wood</em></li>
+        <li>Size: <em>W 140&nbsp;cm × H 86&nbsp;cm × D 40&nbsp;cm</em></li>
+        <li>Leg height: <em>12&nbsp;cm</em> • Numerous shelves • Wall-fixable</li>
+      </ul>
+    </div>
+  </div></div>
+</div>
+
+<!-- PEKIN -->
+<div class="modal fade model-modal" id="mdl-cs-pekin" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered"><div class="modal-content">
+    <div class="modal-header"><h5 class="modal-title">PEKIN Console</h5>
+      <button type="button" class="close" data-dismiss="modal"><span>×</span></button></div>
+    <div class="modal-body">
+      <figure class="sheet-wrap"><img class="sheet-img" src="images/console/pekinkol.png" alt="PEKIN Console – views"></figure>
+      <ul class="specs">
+        <li>Material: <em>100% melamine-coated particle board</em> • Thickness <em>18&nbsp;mm</em></li>
+        <li>Legs: <em>Plastic</em></li>
+        <li>Size: <em>W 150&nbsp;cm × H 40&nbsp;cm × D 76&nbsp;cm</em></li>
+        <li>Numerous shelves • Wall-fixable</li>
+      </ul>
+    </div>
+  </div></div>
+</div>
+
+<!-- SUDER -->
+<div class="modal fade model-modal" id="mdl-cs-suder" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered"><div class="modal-content">
+    <div class="modal-header"><h5 class="modal-title">SUDER Console</h5>
+      <button type="button" class="close" data-dismiss="modal"><span>×</span></button></div>
+    <div class="modal-body">
+      <figure class="sheet-wrap"><img class="sheet-img" src="images/console/suderkol.png" alt="SUDER Console – views"></figure>
+      <ul class="specs">
+        <li>Material: <em>100% melamine-coated particle board</em> • Thickness <em>18&nbsp;mm</em></li>
+        <li>Legs: <em>Metal</em> • Handle: <em>Metal</em></li>
+        <li>Size: <em>W 140&nbsp;cm × H 86&nbsp;cm × D 40&nbsp;cm</em></li>
+        <li>Leg height: <em>15&nbsp;cm</em> • Numerous shelves • Wall-fixable</li>
+      </ul>
+    </div>
+  </div></div>
+</div>
+
+<!-- UTAH -->
+<div class="modal fade model-modal" id="mdl-cs-utah" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered"><div class="modal-content">
+    <div class="modal-header"><h5 class="modal-title">UTAH Console</h5>
+      <button type="button" class="close" data-dismiss="modal"><span>×</span></button></div>
+    <div class="modal-body">
+      <figure class="sheet-wrap"><img class="sheet-img" src="images/console/utahkol.png" alt="UTAH Console – views"></figure>
+      <ul class="specs">
+        <li>Material: <em>100% melamine-coated particle board</em> • Thickness <em>18&nbsp;mm</em></li>
+        <li>Size: <em>W 140&nbsp;cm × H 94&nbsp;cm × D 40&nbsp;cm</em></li>
+        <li>Leg height: <em>20&nbsp;cm</em> • Numerous shelves • Wall-fixable</li>
+      </ul>
+    </div>
+  </div></div>
+</div>
+
+<!-- VEIT -->
+<div class="modal fade model-modal" id="mdl-cs-veit" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered"><div class="modal-content">
+    <div class="modal-header"><h5 class="modal-title">VEIT Console</h5>
+      <button type="button" class="close" data-dismiss="modal"><span>×</span></button></div>
+    <div class="modal-body">
+      <figure class="sheet-wrap"><img class="sheet-img" src="images/console/veitkol.png" alt="VEIT Console – views"></figure>
+      <ul class="specs">
+        <li>Material: <em>100% melamine-coated particle board</em> • Thickness <em>18&nbsp;mm</em></li>
+        <li>Legs: <em>Metal</em></li>
+        <li>Size: <em>W 140&nbsp;cm × H 40&nbsp;cm × D 89&nbsp;cm</em></li>
+        <li>Leg height: <em>15&nbsp;cm</em> • Numerous shelves • Wall-fixable</li>
+      </ul>
+    </div>
+  </div></div>
+</div>
+
+<!-- BOTH -->
+<div class="modal fade model-modal" id="mdl-cs-both" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered"><div class="modal-content">
+    <div class="modal-header"><h5 class="modal-title">BOTH Console</h5>
+      <button type="button" class="close" data-dismiss="modal"><span>×</span></button></div>
+    <div class="modal-body">
+      <figure class="sheet-wrap"><img class="sheet-img" src="images/console/bothconsolekol.PNG" alt="BOTH Console – views"></figure>
+      <ul class="specs">
+        <li>Material: <em>100% melamine-coated particle board</em> • Thickness <em>18&nbsp;mm</em></li>
+        <li>Legs: <em>Plastic</em></li>
+        <li>Size: <em>W 150&nbsp;cm × H 42&nbsp;cm × D 71&nbsp;cm</em></li>
+        <li>Numerous shelves • Wall-fixable</li>
+      </ul>
+    </div>
+  </div></div>
+</div>
+
+<!-- ===== DINING TABLES ===== -->
+<section id="dining-tables" class="section-products">
+  <div class="container container-narrow">
+    <h2>Dining Table</h2>
+
+    <div class="cards-slider" id="dining-slider">
+      <button class="cards-arrow prev" aria-label="Previous">‹</button>
+      <div class="cards-track">
+
+        <!-- HOUSTON -->
+        <div class="card-wrap">
+          <div class="product-card">
+            <img src="images/DINING TABLE/HOUSTON DINING TABLE.jfif" alt="HOUSTON Dining Table">
+            <div class="body">
+              <h6>HOUSTON Dining Table</h6>
+              <div class="meta">Warm wood top • Black legs</div>
+              <div class="actions">
+                <a class="btn btn-sm btn-outline-dark" data-toggle="modal" data-target="#mdl-din-houston">Details</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- LYON -->
+        <div class="card-wrap">
+          <div class="product-card">
+            <img src="images/DINING TABLE/LYON DINING TABLE.jpeg" alt="LYON Dining Table">
+            <div class="body">
+              <h6>LYON Dining Table</h6>
+              <div class="meta">Oval top • Gold metal base</div>
+              <div class="actions">
+                <a class="btn btn-sm btn-outline-dark" data-toggle="modal" data-target="#mdl-din-lyon">Details</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- MELIS -->
+        <div class="card-wrap">
+          <div class="product-card">
+            <img src="images/DINING TABLE/MELIS DINING TABLE.webp" alt="MELIS Dining Table">
+            <div class="body">
+              <h6>MELIS Dining Table</h6>
+              <div class="meta">Natural look • Cozy chairs</div>
+              <div class="actions">
+                <a class="btn btn-sm btn-outline-dark" data-toggle="modal" data-target="#mdl-din-melis">Details</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- TURKEY -->
+        <div class="card-wrap">
+          <div class="product-card">
+            <img src="images/DINING TABLE/TURKEY DINING TABLE.webp" alt="TURKEY Dining Table">
+            <div class="body">
+              <h6>TURKEY Dining Table</h6>
+              <div class="meta">Bench option • Modern lines</div>
+              <div class="actions">
+                <a class="btn btn-sm btn-outline-dark" data-toggle="modal" data-target="#mdl-din-turkey">Details</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <button class="cards-arrow next" aria-label="Next">›</button>
+    </div>
+  </div>
+</section>
+
+<!-- ===== Modals Dining Tables (une image “sheet”) ===== -->
+
+<!-- HOUSTON -->
+<div class="modal fade model-modal" id="mdl-din-houston" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered"><div class="modal-content">
+    <div class="modal-header"><h5 class="modal-title">HOUSTON Dining Table</h5>
+      <button type="button" class="close" data-dismiss="modal"><span>×</span></button></div>
+    <div class="modal-body">
+      <figure class="sheet-wrap"><img class="sheet-img" src="images/DINING TABLE/HOUSTON DINING TABLE.jfif" alt="HOUSTON Dining Table – view"></figure>
+      <ul class="specs">
+       
+        <li>Seating: <em>4–6</em></li>
+      </ul>
+    </div>
+  </div></div>
+</div>
+
+<!-- LYON -->
+<div class="modal fade model-modal" id="mdl-din-lyon" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered"><div class="modal-content">
+    <div class="modal-header"><h5 class="modal-title">LYON Dining Table</h5>
+      <button type="button" class="close" data-dismiss="modal"><span>×</span></button></div>
+    <div class="modal-body">
+      <figure class="sheet-wrap"><img class="sheet-img" src="images/DINING TABLE/LYON DINING TABLE.jpeg" alt="LYON Dining Table – view"></figure>
+      <ul class="specs">
+       
+        <li>Base: <em>Gold metal</em></li>
+      
+        <li>Seating: <em>6</em></li>
+      </ul>
+    </div>
+  </div></div>
+</div>
+
+<!-- MELIS -->
+<div class="modal fade model-modal" id="mdl-din-melis" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered"><div class="modal-content">
+    <div class="modal-header"><h5 class="modal-title">MELIS Dining Table</h5>
+      <button type="button" class="close" data-dismiss="modal"><span>×</span></button></div>
+    <div class="modal-body">
+      <figure class="sheet-wrap"><img class="sheet-img" src="images/DINING TABLE/MELIS DINING TABLE.webp" alt="MELIS Dining Table – view"></figure>
+      <ul class="specs">
+       
+        <li>Seating: <em>4–6</em></li>
+      </ul>
+    </div>
+  </div></div>
+</div>
+
+<!-- TURKEY -->
+<div class="modal fade model-modal" id="mdl-din-turkey" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered"><div class="modal-content">
+    <div class="modal-header"><h5 class="modal-title">TURKEY Dining Table</h5>
+      <button type="button" class="close" data-dismiss="modal"><span>×</span></button></div>
+    <div class="modal-body">
+      <figure class="sheet-wrap"><img class="sheet-img" src="images/DINING TABLE/TURKEY DINING TABLE.webp" alt="TURKEY Dining Table – view"></figure>
+      <ul class="specs">
+     
+        <li>Bench: <em>Option</em></li>
+     
+        <li>Seating: <em>4–6</em></li>
+      </ul>
+    </div>
+  </div></div>
+</div>
+
+
+<!-- ===== MAKE-UP TABLES ===== -->
+<section id="makeup-tables" class="section-products">
+  <div class="container container-narrow">
+    <h2>Make-up Table</h2>
+
+    <div class="cards-slider" id="makeup-slider">
+      <button class="cards-arrow prev" aria-label="Previous">‹</button>
+      <div class="cards-track">
+
+        <!-- DUBAI -->
+        <div class="card-wrap">
+          <div class="product-card">
+            <img src="images/makeup/dubai.png" alt="DUBAI Make-up Table">
+            <div class="body">
+              <h6>DUBAI Make-up Table</h6>
+              <div class="meta">(OAK/Black)</div>
+              <div class="actions">
+                <a class="btn btn-sm btn-outline-dark" data-toggle="modal" data-target="#mdl-makeup-dubai">Details</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- PHUKET -->
+        <div class="card-wrap">
+          <div class="product-card">
+            <img src="images/makeup/phuket.png" alt="PHUKET Make-up Table">
+            <div class="body">
+              <h6>PHUKET Make-up Table</h6>
+              <div class="meta">(White/Black)</div>
+              <div class="actions">
+                <a class="btn btn-sm btn-outline-dark" data-toggle="modal" data-target="#mdl-makeup-phuket">Details</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SOFYA -->
+        <div class="card-wrap">
+          <div class="product-card">
+            <img src="images/makeup/sofya.png" alt="SOFYA Make-up Table">
+            <div class="body">
+              <h6>SOFYA Make-up Table</h6>
+              <div class="meta">(Walnut/Black)</div>
+              <div class="actions">
+                <a class="btn btn-sm btn-outline-dark" data-toggle="modal" data-target="#mdl-makeup-sofya">Details</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ATINA -->
+        <div class="card-wrap">
+          <div class="product-card">
+            <img src="images/makeup/atina.png" alt="ATINA Make-up Table">
+            <div class="body">
+              <h6>ATINA Make-up Table</h6>
+              <div class="meta">(White/Black)</div>
+              <div class="actions">
+                <a class="btn btn-sm btn-outline-dark" data-toggle="modal" data-target="#mdl-makeup-atina">Details</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <button class="cards-arrow next" aria-label="Next">›</button>
+    </div>
+  </div>
+</section>
+
+<!-- ===== Modals Make-up Tables ===== -->
+<!-- DUBAI -->
+<div class="modal fade model-modal" id="mdl-makeup-dubai" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered"><div class="modal-content">
+    <div class="modal-header"><h5 class="modal-title">DUBAI Make-up Table</h5>
+      <button type="button" class="close" data-dismiss="modal"><span>×</span></button></div>
+    <div class="modal-body">
+      <figure class="sheet-wrap">
+        <img class="sheet-img" src="images/makeup/dubaikol.PNG" alt="DUBAI Make-up Table – views">
+      </figure>
+      <ul class="specs">
+        <li>Material: <em>100% melamine-coated particle board</em></li>
+        <li>Thickness: <em>18 mm</em></li>
+        <li>Legs: <em>Metal</em></li>
+        <li>Dimensions: <em>W 100 cm × H 50 cm × D 89 cm</em></li>
+        <li>Numerous Shelves</li>
+        <li>Mirror Included</li>
+        <li>Can be Fixed to the Wall</li>
+      </ul>
+    </div>
+  </div></div>
+</div>
+
+<!-- PHUKET -->
+<div class="modal fade model-modal" id="mdl-makeup-phuket" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered"><div class="modal-content">
+    <div class="modal-header"><h5 class="modal-title">PHUKET Make-up Table</h5>
+      <button type="button" class="close" data-dismiss="modal"><span>×</span></button></div>
+    <div class="modal-body">
+      <figure class="sheet-wrap">
+        <img class="sheet-img" src="images/makeup/phuketkol.PNG" alt="PHUKET Make-up Table – views">
+      </figure>
+      <ul class="specs">
+        <li>Material: <em>100% melamine-coated particle board</em></li>
+        <li>Thickness: <em>18 mm</em></li>
+        <li>Legs: <em>Metal</em></li>
+        <li>Dimensions: <em>W 100 cm × H 50 cm × D 89 cm</em></li>
+        <li>Numerous Shelves</li>
+        <li>Mirror Included</li>
+        <li>Can be Fixed to the Wall</li>
+      </ul>
+    </div>
+  </div></div>
+</div>
+
+<!-- SOFYA -->
+<div class="modal fade model-modal" id="mdl-makeup-sofya" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered"><div class="modal-content">
+    <div class="modal-header"><h5 class="modal-title">SOFYA Make-up Table</h5>
+      <button type="button" class="close" data-dismiss="modal"><span>×</span></button></div>
+    <div class="modal-body">
+      <figure class="sheet-wrap">
+        <img class="sheet-img" src="images/makeup/sofyakol.PNG" alt="SOFYA Make-up Table – views">
+      </figure>
+      <ul class="specs">
+        <li>Material: <em>100% melamine-coated particle board</em></li>
+        <li>Thickness: <em>18 mm</em></li>
+        <li>Legs: <em>Metal</em></li>
+        <li>Table Size: <em>W 100 cm × H 50 cm × D 89 cm</em></li>
+        <li>Mirror Size: <em>W 100 cm × H 50 cm</em></li>
+        <li>Numerous Shelves</li>
+        <li>Mirror Included</li>
+        <li>Can be Fixed to the Wall</li>
+      </ul>
+    </div>
+  </div></div>
+</div>
+
+<!-- ATINA -->
+<div class="modal fade model-modal" id="mdl-makeup-atina" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered"><div class="modal-content">
+    <div class="modal-header"><h5 class="modal-title">ATINA Make-up Table</h5>
+      <button type="button" class="close" data-dismiss="modal"><span>×</span></button></div>
+    <div class="modal-body">
+      <figure class="sheet-wrap">
+        <img class="sheet-img" src="images/makeup/atinakol.PNG" alt="ATINA Make-up Table – views">
+      </figure>
+      <ul class="specs">
+        <li>Material: <em>100% melamine-coated particle board</em></li>
+        <li>Thickness: <em>18 mm</em></li>
+        <li>Legs: <em>Metal</em></li>
+        <li>Dimensions: <em>W 100 cm × H 50 cm × D 124 cm</em></li>
+        <li>Numerous Shelves</li>
+        <li>Mirror Included</li>
+        <li>Can be Fixed to the Wall</li>
+      </ul>
+    </div>
+  </div></div>
+</div>
+
+
+<!-- ===== MULTI CABINETS ===== -->
+<section id="multi-cabinets" class="section-products">
+  <div class="container container-narrow">
+    <h2>Multi Cabinet</h2>
+
+    <div class="cards-slider" id="multi-cab-slider">
+      <button class="cards-arrow prev" aria-label="Previous">‹</button>
+      <div class="cards-track">
+
+        <!-- BERN -->
+        <div class="card-wrap">
+          <div class="product-card">
+            <img src="images/multicabinet/bern.png" alt="BERN Multi Cabinet">
+            <div class="body">
+              <h6>BERN Multi Cabinet</h6>
+              <div class="meta">(OAK/Black)</div>
+              <div class="actions">
+                <a class="btn btn-sm btn-outline-dark" data-toggle="modal" data-target="#mdl-mc-bern">Details</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- PIFFA -->
+        <div class="card-wrap">
+          <div class="product-card">
+            <img src="images/multicabinet/piffa.png" alt="PIFFA Multi Cabinet">
+            <div class="body">
+              <h6>PIFFA Multi Cabinet</h6>
+              <div class="meta">(OAK/White)</div>
+              <div class="actions">
+                <a class="btn btn-sm btn-outline-dark" data-toggle="modal" data-target="#mdl-mc-piffa">Details</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SEUL -->
+        <div class="card-wrap">
+          <div class="product-card">
+            <img src="images/multicabinet/seulcabinet.PNG" alt="SEUL Multi Cabinet">
+            <div class="body">
+              <h6>SEUL Multi Cabinet</h6>
+              <div class="meta">(OAK/Black)</div>
+              <div class="actions">
+                <a class="btn btn-sm btn-outline-dark" data-toggle="modal" data-target="#mdl-mc-seul">Details</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- WAGA -->
+        <div class="card-wrap">
+          <div class="product-card">
+            <img src="images/multicabinet/waga.png" alt="WAGA Multi Cabinet">
+            <div class="body">
+              <h6>WAGA Multi Cabinet</h6>
+              <div class="meta">(OAK/White)</div>
+              <div class="actions">
+                <a class="btn btn-sm btn-outline-dark" data-toggle="modal" data-target="#mdl-mc-waga">Details</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <button class="cards-arrow next" aria-label="Next">›</button>
+    </div>
+  </div>
+</section>
+
+<!-- ===== Modals Multi Cabinets (une seule image) ===== -->
+
+<!-- BERN -->
+<div class="modal fade model-modal" id="mdl-mc-bern" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered"><div class="modal-content">
+    <div class="modal-header">
+      <h5 class="modal-title">BERN Multi Cabinet</h5>
+      <button type="button" class="close" data-dismiss="modal"><span>×</span></button>
+    </div>
+    <div class="modal-body">
+      <figure class="sheet-wrap">
+        <img class="sheet-img" src="images/multicabinet/bernkol.PNG" alt="BERN Multi Cabinet – views">
+      </figure>
+      <ul class="specs">
+        <li>Material: <em>100% melamine-coated particle board</em></li>
+        <li>Thickness: <em>18 mm</em></li>
+        <li>Legs: <em>Plastic</em></li>
+        <li>Dimensions: <em>W 90 cm × H 35 cm × D 113 cm</em></li>
+        <li>Storage: <em>1 drawer • Numerous shelves</em></li>
+        <li>Wall-mountable: <em>Yes</em></li>
+      </ul>
+    </div>
+  </div></div>
+</div>
+
+<!-- PIFFA -->
+<div class="modal fade model-modal" id="mdl-mc-piffa" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered"><div class="modal-content">
+    <div class="modal-header">
+      <h5 class="modal-title">PIFFA Multi Cabinet</h5>
+      <button type="button" class="close" data-dismiss="modal"><span>×</span></button>
+    </div>
+    <div class="modal-body">
+      <figure class="sheet-wrap">
+        <img class="sheet-img" src="images/multicabinet/piffakol.PNG" alt="PIFFA Multi Cabinet – views">
+      </figure>
+      <ul class="specs">
+        <li>Material: <em>100% melamine-coated particle board</em></li>
+        <li>Thickness: <em>18 mm</em></li>
+        <li>Dimensions: <em>W 100 cm × H 82 cm × D 35 cm</em></li>
+        <li>Storage: <em>4 drawers • Numerous shelves</em></li>
+        <li>Wall-mountable: <em>Yes</em></li>
+      </ul>
+    </div>
+  </div></div>
+</div>
+
+<!-- SEUL -->
+<div class="modal fade model-modal" id="mdl-mc-seul" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered"><div class="modal-content">
+    <div class="modal-header">
+      <h5 class="modal-title">SEUL Multi Cabinet</h5>
+      <button type="button" class="close" data-dismiss="modal"><span>×</span></button>
+    </div>
+    <div class="modal-body">
+      <figure class="sheet-wrap">
+        <img class="sheet-img" src="images/multicabinet/seulcabkol.PNG" alt="SEUL Multi Cabinet – views">
+      </figure>
+      <ul class="specs">
+        <li>Material: <em>100% melamine-coated particle board</em></li>
+        <li>Thickness: <em>18 mm</em></li>
+        <li>Legs: <em>Plastic</em></li>
+        <li>Dimensions: <em>W 70 cm × H 40 cm × D 91.5 cm</em></li>
+        <li>Storage: <em>Numerous shelves</em></li>
+        <li>Wall-mountable: <em>Yes</em></li>
+      </ul>
+    </div>
+  </div></div>
+</div>
+
+<!-- WAGA -->
+<div class="modal fade model-modal" id="mdl-mc-waga" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered"><div class="modal-content">
+    <div class="modal-header">
+      <h5 class="modal-title">WAGA Multi Cabinet</h5>
+      <button type="button" class="close" data-dismiss="modal"><span>×</span></button>
+    </div>
+    <div class="modal-body">
+      <figure class="sheet-wrap">
+        <img class="sheet-img" src="images/multicabinet/wagakol.PNG" alt="WAGA Multi Cabinet – views">
+      </figure>
+      <ul class="specs">
+        <li>Material: <em>100% melamine-coated particle board</em></li>
+        <li>Thickness: <em>18 mm</em></li>
+        <li>Dimensions: <em>W 100 cm × H 82 cm × D 35 cm</em></li>
+        <li>Storage: <em>Numerous shelves</em></li>
+        <li>Wall-mountable: <em>Yes</em></li>
+      </ul>
+    </div>
+  </div></div>
+</div>
+
+
+<!-- ===== NESTING TABLES ===== -->
+<section id="nesting-tables" class="section-products">
+  <div class="container container-narrow">
+    <h2>Nesting Table</h2>
+
+    <div class="cards-slider" id="nesting-slider">
+      <button class="cards-arrow prev" aria-label="Previous">‹</button>
+      <div class="cards-track">
+
+        <!-- FORGA -->
+        <div class="card-wrap">
+          <div class="product-card">
+            <img src="images/nesting/forga.PNG" alt="FORGA Nesting Table">
+            <div class="body">
+              <h6>FORGA Nesting Table</h6>
+              <div class="meta">(Black)</div>
+              <div class="actions">
+                <a class="btn btn-sm btn-outline-dark" data-toggle="modal" data-target="#mdl-nst-forga">Details</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- LINMET -->
+        <div class="card-wrap">
+          <div class="product-card">
+            <img src="images/nesting/linmet.PNG" alt="LINMET Nesting Table">
+            <div class="body">
+              <h6>LINMET Nesting Table</h6>
+              <div class="meta">(Walnut/Grey)</div>
+              <div class="actions">
+                <a class="btn btn-sm btn-outline-dark" data-toggle="modal" data-target="#mdl-nst-linmet">Details</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- LYLE -->
+        <div class="card-wrap">
+          <div class="product-card">
+            <img src="images/nesting/lyle.PNG" alt="LYLE Nesting Table">
+            <div class="body">
+              <h6>LYLE Nesting Table</h6>
+              <div class="meta">(Black/Gold)</div>
+              <div class="actions">
+                <a class="btn btn-sm btn-outline-dark" data-toggle="modal" data-target="#mdl-nst-lyle">Details</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- NEEP -->
+        <div class="card-wrap">
+          <div class="product-card">
+            <img src="images/nesting/neep.PNG" alt="NEEP Nesting Table">
+            <div class="body">
+              <h6>NEEP Nesting Table</h6>
+              <div class="meta">(White/Walnut/Grey)</div>
+              <div class="actions">
+                <a class="btn btn-sm btn-outline-dark" data-toggle="modal" data-target="#mdl-nst-neep">Details</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- QIRO -->
+        <div class="card-wrap">
+          <div class="product-card">
+            <img src="images/nesting/quiro.PNG" alt="QIRO Nesting Table">
+            <div class="body">
+              <h6>QIRO Nesting Table</h6>
+              <div class="meta">(Walnut/Blue/Yellow/Pink)</div>
+              <div class="actions">
+                <a class="btn btn-sm btn-outline-dark" data-toggle="modal" data-target="#mdl-nst-qiro">Details</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- QUBEC -->
+        <div class="card-wrap">
+          <div class="product-card">
+            <img src="images/nesting/qubec.PNG" alt="QUBEC Nesting Table">
+            <div class="body">
+              <h6>QUBEC Nesting Table</h6>
+              <div class="meta">(Grey/White/Walnut)</div>
+              <div class="actions">
+                <a class="btn btn-sm btn-outline-dark" data-toggle="modal" data-target="#mdl-nst-qubec">Details</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- WING -->
+        <div class="card-wrap">
+          <div class="product-card">
+            <img src="images/nesting/wing.PNG" alt="WING Nesting Table">
+            <div class="body">
+              <h6>WING Nesting Table</h6>
+              <div class="meta">(Black/Silver)</div>
+              <div class="actions">
+                <a class="btn btn-sm btn-outline-dark" data-toggle="modal" data-target="#mdl-nst-wing">Details</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ARWTON -->
+        <div class="card-wrap">
+          <div class="product-card">
+            <img src="images/nesting/arwton.PNG" alt="ARWTON Nesting Table">
+            <div class="body">
+              <h6>ARWTON Nesting Table</h6>
+              <div class="meta">(Gray/Black)</div>
+              <div class="actions">
+                <a class="btn btn-sm btn-outline-dark" data-toggle="modal" data-target="#mdl-nst-arwton">Details</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <button class="cards-arrow next" aria-label="Next">›</button>
+    </div>
+  </div>
+</section>
+
+<!-- ===== Modals Nesting Tables ===== -->
+
+<!-- FORGA -->
+<div class="modal fade model-modal" id="mdl-nst-forga" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered"><div class="modal-content">
+    <div class="modal-header"><h5 class="modal-title">FORGA Nesting Table</h5>
+      <button type="button" class="close" data-dismiss="modal"><span>×</span></button></div>
+    <div class="modal-body">
+      <figure class="sheet-wrap"><img class="sheet-img" src="images/nesting/forga.PNG" alt="FORGA Nesting Table – views"></figure>
+      <ul class="specs">
+        <li>Material: <em>100% melamine-coated particle board</em></li>
+        <li>Small: <em>W 41 × H 47 × D 39 cm</em></li>
+        <li>Medium: <em>W 41 × H 53 × D 39 cm</em></li>
+        <li>Large: <em>W 41 × H 59 × D 39 cm</em></li>
+      </ul>
+    </div>
+  </div></div>
+</div>
+
+<!-- LINMET -->
+<div class="modal fade model-modal" id="mdl-nst-linmet" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered"><div class="modal-content">
+    <div class="modal-header"><h5 class="modal-title">LINMET Nesting Table</h5>
+      <button type="button" class="close" data-dismiss="modal"><span>×</span></button></div>
+    <div class="modal-body">
+      <figure class="sheet-wrap"><img class="sheet-img" src="images/nesting/linmet.png" alt="LINMET Nesting Table – views"></figure>
+      <ul class="specs">
+        <li>Material: <em>100% melamine-coated particle board</em></li>
+        <li>Small: <em>W 39 × H 48 × D 39 cm</em></li>
+        <li>Medium: <em>W 39 × H 54.5 × D 39 cm</em></li>
+        <li>Large: <em>W 39 × H 60.5 × D 39 cm</em></li>
+      </ul>
+    </div>
+  </div></div>
+</div>
+
+<!-- LYLE -->
+<div class="modal fade model-modal" id="mdl-nst-lyle" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered"><div class="modal-content">
+    <div class="modal-header"><h5 class="modal-title">LYLE Nesting Table</h5>
+      <button type="button" class="close" data-dismiss="modal"><span>×</span></button></div>
+    <div class="modal-body">
+      <figure class="sheet-wrap"><img class="sheet-img" src="images/nesting/lyle.png" alt="LYLE Nesting Table – views"></figure>
+      <ul class="specs">
+        <li>Material: <em>100% melamine-coated particle board</em></li>
+        <li>Small: <em>W 39 × H 47 × D 39 cm</em></li>
+        <li>Medium: <em>W 39 × H 52.5 × D 39 cm</em></li>
+        <li>Large: <em>W 39 × H 58.5 × D 39 cm</em></li>
+      </ul>
+    </div>
+  </div></div>
+</div>
+
+<!-- NEEP -->
+<div class="modal fade model-modal" id="mdl-nst-neep" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered"><div class="modal-content">
+    <div class="modal-header"><h5 class="modal-title">NEEP Nesting Table</h5>
+      <button type="button" class="close" data-dismiss="modal"><span>×</span></button></div>
+    <div class="modal-body">
+      <figure class="sheet-wrap"><img class="sheet-img" src="images/nesting/neep.png" alt="NEEP Nesting Table – views"></figure>
+      <ul class="specs">
+        <li>Material: <em>100% melamine-coated particle board</em></li>
+        <li>Small: <em>W 39 × H 48 × D 39 cm</em></li>
+        <li>Medium: <em>W 39 × H 54.5 × D 39 cm</em></li>
+        <li>Large: <em>W 39 × H 60.5 × D 39 cm</em></li>
+      </ul>
+    </div>
+  </div></div>
+</div>
+
+
+<!-- QIRO -->
+<div class="modal fade model-modal" id="mdl-nst-qiro" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered"><div class="modal-content">
+    <div class="modal-header"><h5 class="modal-title">QIRO Nesting Table</h5>
+      <button type="button" class="close" data-dismiss="modal"><span>×</span></button></div>
+    <div class="modal-body">
+      <figure class="sheet-wrap"><img class="sheet-img" src="images/nesting/qiro.png" alt="QIRO Nesting Table – views"></figure>
+      <ul class="specs">
+        <li>Material: <em>100% melamine-coated particle board</em></li>
+        <li>Small: <em>W 39 × H 48 × D 39 cm</em></li>
+        <li>Medium: <em>W 39 × H 54.5 × D 39 cm</em></li>
+        <li>Large: <em>W 39 × H 60.5 × D 39 cm</em></li>
+      </ul>
+    </div>
+  </div></div>
+</div>
+
+<!-- QUBEC -->
+<div class="modal fade model-modal" id="mdl-nst-qubec" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered"><div class="modal-content">
+    <div class="modal-header"><h5 class="modal-title">QUBEC Nesting Table</h5>
+      <button type="button" class="close" data-dismiss="modal"><span>×</span></button></div>
+    <div class="modal-body">
+      <figure class="sheet-wrap"><img class="sheet-img" src="images/nesting/qubec.png" alt="QUBEC Nesting Table – views"></figure>
+      <ul class="specs">
+        <li>Material: <em>100% melamine-coated particle board</em></li>
+        <li>Small: <em>W 41 × H 47 × D 39 cm</em></li>
+        <li>Medium: <em>W 41 × H 53 × D 39 cm</em></li>
+        <li>Large: <em>W 41 × H 59 × D 39 cm</em></li>
+      </ul>
+    </div>
+  </div></div>
+</div>
+
+<!-- WING -->
+<div class="modal fade model-modal" id="mdl-nst-wing" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered"><div class="modal-content">
+    <div class="modal-header"><h5 class="modal-title">WING Nesting Table</h5>
+      <button type="button" class="close" data-dismiss="modal"><span>×</span></button></div>
+    <div class="modal-body">
+      <figure class="sheet-wrap"><img class="sheet-img" src="images/nesting/wing.png" alt="WING Nesting Table – views"></figure>
+      <ul class="specs">
+        <li>Material: <em>100% melamine-coated particle board</em></li>
+        <li>Small: <em>W 39 × H 47 × D 39 cm</em></li>
+        <li>Medium: <em>W 39 × H 52.5 × D 39 cm</em></li>
+        <li>Large: <em>W 39 × H 58.5 × D 39 cm</em></li>
+      </ul>
+    </div>
+  </div></div>
+</div>
+
+<!-- ARWTON -->
+<div class="modal fade model-modal" id="mdl-nst-arwton" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered"><div class="modal-content">
+    <div class="modal-header"><h5 class="modal-title">ARWTON Nesting Table</h5>
+      <button type="button" class="close" data-dismiss="modal"><span>×</span></button></div>
+    <div class="modal-body">
+      <figure class="sheet-wrap"><img class="sheet-img" src="images/nesting/arwton.png" alt="ARWTON Nesting Table – views"></figure>
+      <ul class="specs">
+        <li>Material: <em>100% melamine-coated particle board</em></li>
+        <li>Small: <em>W 42.5 × H 37 × D 33.5 cm</em></li>
+        <li>Medium: <em>W 47.5 × H 50 × D 37 cm</em></li>
+        <li>Large: <em>W 52.5 × H 60 × D 38.5 cm</em></li>
+      </ul>
+    </div>
+  </div></div>
+</div>
+
+
+<!-- ===== SHOE CABINETS ===== -->
+<!-- ===== SHOE CABINETS (centered grid, no arrows) ===== -->
+<section id="shoe-cabinets" class="section-products">
+  <div class="container container-narrow">
+    <h2>Shoe Cabinet</h2>
+
+    <div class="row g-3 justify-content-center">
+      <!-- FIJEL -->
+      <div class="col-12 col-sm-6 col-lg-4">
+        <div class="product-card">
+          <img src="images/shoe/fijel.PNG" alt="FIJEL Shoe Cabinet">
+          <div class="body">
+            <h6>FIJEL Shoe Cabinet</h6>
+            <div class="meta">(OAK/White)</div>
+            <div class="actions">
+              <a class="btn btn-sm btn-outline-dark" data-toggle="modal" data-target="#mdl-shc-fijel">Details</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- OMNINDE -->
+      <div class="col-12 col-sm-6 col-lg-4">
+        <div class="product-card">
+          <img src="images/shoe/omninde.PNG" alt="OMNINDE Shoe Cabinet">
+          <div class="body">
+            <h6>OMNINDE Shoe Cabinet</h6>
+            <div class="meta">(OAK/White)</div>
+            <div class="actions">
+              <a class="btn btn-sm btn-outline-dark" data-toggle="modal" data-target="#mdl-shc-omninde">Details</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ZEA -->
+      <div class="col-12 col-sm-6 col-lg-4">
+        <div class="product-card">
+          <img src="images/shoe/zea.PNG" alt="ZEA Shoe Cabinet">
+          <div class="body">
+            <h6>ZEA Shoe Cabinet</h6>
+            <div class="meta">(Gold OAK/Yellow)</div>
+            <div class="actions">
+              <a class="btn btn-sm btn-outline-dark" data-toggle="modal" data-target="#mdl-shc-zea">Details</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ===== Modals Shoe Cabinets (une image “sheet”) ===== -->
+
+<!-- FIJEL -->
+<div class="modal fade model-modal" id="mdl-shc-fijel" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered"><div class="modal-content">
+    <div class="modal-header">
+      <h5 class="modal-title">FIJEL Shoe Cabinet</h5>
+      <button type="button" class="close" data-dismiss="modal"><span>×</span></button>
+    </div>
+    <div class="modal-body">
+      <figure class="sheet-wrap">
+        <img class="sheet-img" src="images/shoe/fijelkol.PNG" alt="FIJEL Shoe Cabinet – views">
+      </figure>
+      <ul class="specs">
+        <li>Material: <em>100% melamine-coated particle board</em></li>
+        <li>Thickness: <em>18&nbsp;mm</em></li>
+        <li>Legs: <em>Plastic</em></li>
+        <li>Bottom module: <em>W 120&nbsp;cm × H 76&nbsp;cm × D 30&nbsp;cm</em></li>
+        <li>Cabinet width: <em>60&nbsp;cm</em></li>
+        <li>Hanger: <em>W 60&nbsp;cm × H 15&nbsp;cm × D 1.8&nbsp;cm</em></li>
+        <li>Numerous shelves • Can be fixed to the wall</li>
+      </ul>
+    </div>
+  </div></div>
+</div>
+
+<!-- OMNINDE -->
+<div class="modal fade model-modal" id="mdl-shc-omninde" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered"><div class="modal-content">
+    <div class="modal-header">
+      <h5 class="modal-title">OMNINDE Shoe Cabinet</h5>
+      <button type="button" class="close" data-dismiss="modal"><span>×</span></button>
+    </div>
+    <div class="modal-body">
+      <figure class="sheet-wrap">
+        <img class="sheet-img" src="images/shoe/omnindekol.PNG" alt="OMNINDE Shoe Cabinet – views">
+      </figure>
+      <ul class="specs">
+        <li>Material: <em>100% melamine-coated particle board</em></li>
+        <li>Thickness: <em>18&nbsp;mm</em></li>
+        <li>Shoe cabinet: <em>W 80&nbsp;cm × H 100&nbsp;cm × D 35&nbsp;cm</em></li>
+        <li>Tall cabinet: <em>W 50&nbsp;cm × H 192&nbsp;cm × D 35&nbsp;cm</em></li>
+        <li>Numerous shelves • Can be fixed to the wall</li>
+      </ul>
+    </div>
+  </div></div>
+</div>
+
+<!-- ZEA -->
+<div class="modal fade model-modal" id="mdl-shc-zea" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered"><div class="modal-content">
+    <div class="modal-header">
+      <h5 class="modal-title">ZEA Shoe Cabinet</h5>
+      <button type="button" class="close" data-dismiss="modal"><span>×</span></button>
+    </div>
+    <div class="modal-body">
+      <figure class="sheet-wrap">
+        <img class="sheet-img" src="images/shoe/zeakol.PNG" alt="ZEA Shoe Cabinet – views">
+      </figure>
+      <ul class="specs">
+        <li>Material: <em>100% melamine-coated particle board</em></li>
+        <li>Thickness: <em>18&nbsp;mm</em></li>
+        <li>Overall size: <em>W 100&nbsp;cm × H 82&nbsp;cm × D 35&nbsp;cm</em></li>
+        <li>Storage: <em>4 drawers • Numerous shelves</em></li>
+        <li>Can be fixed to the wall</li>
+      </ul>
+    </div>
+  </div></div>
+</div>
+
+
+<!-- ===== STUDY DESKS ===== -->
+<section id="study-desks" class="section-products">
+  <div class="container container-narrow">
+    <h2>Study Desk</h2>
+
+    <div class="cards-slider" id="study-slider">
+      <button class="cards-arrow prev" aria-label="Previous">‹</button>
+      <div class="cards-track">
+
+        <!-- MUTY -->
+        <div class="card-wrap">
+          <div class="product-card">
+            <img src="images/studydesk/muty.PNG" alt="MUTY Study Desk">
+            <div class="body">
+              <h6>MUTY Study Desk</h6>
+              <div class="meta">(OAK)</div>
+              <div class="actions">
+                <a class="btn btn-sm btn-outline-dark" data-toggle="modal" data-target="#mdl-sd-muty">Details</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- NEA -->
+        <div class="card-wrap">
+          <div class="product-card">
+            <img src="images/studydesk/nea.PNG" alt="NEA Study Desk">
+            <div class="body">
+              <h6>NEA Study Desk</h6>
+              <div class="meta">(Gold OAK/Yellow)</div>
+              <div class="actions">
+                <a class="btn btn-sm btn-outline-dark" data-toggle="modal" data-target="#mdl-sd-nea">Details</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- HAVANA -->
+        <div class="card-wrap">
+          <div class="product-card">
+            <img src="images/studydesk/havana.PNG" alt="HAVANA Study Desk">
+            <div class="body">
+              <h6>HAVANA Study Desk</h6>
+              <div class="meta">(OAK)</div>
+              <div class="actions">
+                <a class="btn btn-sm btn-outline-dark" data-toggle="modal" data-target="#mdl-sd-havana">Details</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- MONACO -->
+        <div class="card-wrap">
+          <div class="product-card">
+            <img src="images/studydesk/monaco.PNG" alt="MONACO Study Desk">
+            <div class="body">
+              <h6>MONACO Study Desk</h6>
+              <div class="meta">(OAK/Black)</div>
+              <div class="actions">
+                <a class="btn btn-sm btn-outline-dark" data-toggle="modal" data-target="#mdl-sd-monaco">Details</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <button class="cards-arrow next" aria-label="Next">›</button>
+    </div>
+  </div>
+</section>
+
+<!-- ===== Modals Study Desks (une image “sheet”) ===== -->
+
+<!-- MUTY -->
+<div class="modal fade model-modal" id="mdl-sd-muty" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered"><div class="modal-content">
+    <div class="modal-header">
+      <h5 class="modal-title">MUTY Study Desk</h5>
+      <button type="button" class="close" data-dismiss="modal"><span>×</span></button>
+    </div>
+    <div class="modal-body">
+      <figure class="sheet-wrap">
+        <img class="sheet-img" src="images/studydesk/mutykol.PNG" alt="MUTY Study Desk – views">
+      </figure>
+      <ul class="specs">
+        <li>Material: <em>100% melamine-coated particle board</em></li>
+        <li>Thickness: <em>18&nbsp;mm</em></li>
+        <li>Study Desk Size: <em>W 120&nbsp;cm × H 74&nbsp;cm × D 60&nbsp;cm</em></li>
+        <li>Under-desk shelf height: <em>10&nbsp;cm</em></li>
+        <li>Wall shelf size: <em>W 120&nbsp;cm × H 31.8&nbsp;cm × D 20&nbsp;cm</em></li>
+        <li>Shelf height: <em>15&nbsp;cm</em></li>
+        <li>Can be fixed to the wall</li>
+      </ul>
+    </div>
+  </div></div>
+</div>
+
+<!-- NEA -->
+<div class="modal fade model-modal" id="mdl-sd-nea" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered"><div class="modal-content">
+    <div class="modal-header">
+      <h5 class="modal-title">NEA Study Desk</h5>
+      <button type="button" class="close" data-dismiss="modal"><span>×</span></button>
+    </div>
+    <div class="modal-body">
+      <figure class="sheet-wrap">
+        <img class="sheet-img" src="images/studydesk/neakol.PNG" alt="NEA Study Desk – views">
+      </figure>
+      <ul class="specs">
+        <li>Material: <em>100% melamine-coated particle board</em></li>
+        <li>Thickness: <em>18&nbsp;mm</em></li>
+        <li>Legs: <em>Wood</em></li>
+        <li>Handle: <em>Metal</em></li>
+        <li>Desk size: <em>W 120&nbsp;cm × H 74&nbsp;cm × D 60&nbsp;cm</em></li>
+        <li>Drawer size: <em>W 35&nbsp;cm × H 12&nbsp;cm</em></li>
+      </ul>
+    </div>
+  </div></div>
+</div>
+
+<!-- HAVANA -->
+<div class="modal fade model-modal" id="mdl-sd-havana" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered"><div class="modal-content">
+    <div class="modal-header">
+      <h5 class="modal-title">HAVANA Study Desk</h5>
+      <button type="button" class="close" data-dismiss="modal"><span>×</span></button>
+    </div>
+    <div class="modal-body">
+      <figure class="sheet-wrap">
+        <img class="sheet-img" src="images/studydesk/havanakol.PNG" alt="HAVANA Study Desk – views">
+      </figure>
+      <ul class="specs">
+        <li>Material: <em>100% melamine-coated particle board</em></li>
+        <li>Thickness: <em>18&nbsp;mm</em></li>
+        <li>Legs: <em>Metal</em></li>
+        <li>Dimensions: <em>W 100&nbsp;cm × H 50&nbsp;cm × D 89&nbsp;cm</em></li>
+      </ul>
+    </div>
+  </div></div>
+</div>
+
+<!-- MONACO -->
+<div class="modal fade model-modal" id="mdl-sd-monaco" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered"><div class="modal-content">
+    <div class="modal-header">
+      <h5 class="modal-title">MONACO Study Desk</h5>
+      <button type="button" class="close" data-dismiss="modal"><span>×</span></button>
+    </div>
+    <div class="modal-body">
+      <figure class="sheet-wrap">
+        <img class="sheet-img" src="images/studydesk/monacokol.PNG" alt="MONACO Study Desk – views">
+      </figure>
+      <ul class="specs">
+        <li>Material: <em>100% melamine-coated particle board</em></li>
+        <li>Thickness: <em>18&nbsp;mm</em></li>
+        <li>Legs: <em>Metal</em></li>
+        <li>Dimensions: <em>W 100&nbsp;cm × H 50&nbsp;cm × D 89&nbsp;cm</em></li>
+      </ul>
+    </div>
+  </div></div>
+</div>
+
+
+<!-- ===== TV UNITS ===== -->
+<section id="tv-units" class="section-products">
+  <div class="container container-narrow">
+    <h2>TV Unit</h2>
+
+    <div class="cards-slider" id="tv-slider">
+      <button class="cards-arrow prev" aria-label="Previous">‹</button>
+      <div class="cards-track">
+
+        <!-- GLASGOW -->
+        <div class="card-wrap">
+          <div class="product-card">
+            <img src="images/tvstand/glasgow.PNG" alt="GLASGOW TV Stand">
+            <div class="body">
+              <h6>GLASGOW TV Stand</h6>
+              <div class="meta">(OAK/White)</div>
+              <div class="actions">
+                <a class="btn btn-sm btn-outline-dark" data-toggle="modal" data-target="#mdl-tv-glasgow">Details</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- MAKU -->
+        <div class="card-wrap">
+          <div class="product-card">
+            <img src="images/tvstand/maku.PNG" alt="MAKU TV Stand">
+            <div class="body">
+              <h6>MAKU TV Stand</h6>
+              <div class="meta">(OAK/White)</div>
+              <div class="actions">
+                <a class="btn btn-sm btn-outline-dark" data-toggle="modal" data-target="#mdl-tv-maku">Details</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- RANBUTY -->
+        <div class="card-wrap">
+          <div class="product-card">
+            <img src="images/tvstand/rambuty.PNG" alt="RANBUTY TV Stand">
+            <div class="body">
+              <h6>RANBUTY TV Set</h6>
+              <div class="meta">(OAK/White)</div>
+              <div class="actions">
+                <a class="btn btn-sm btn-outline-dark" data-toggle="modal" data-target="#mdl-tv-ranbuty">Details</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- RUST -->
+        <div class="card-wrap">
+          <div class="product-card">
+            <img src="images/tvstand/rust.PNG" alt="RUST TV Stand">
+            <div class="body">
+              <h6>RUST TV Stand</h6>
+              <div class="meta">(OAK)</div>
+              <div class="actions">
+                <a class="btn btn-sm btn-outline-dark" data-toggle="modal" data-target="#mdl-tv-rust">Details</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SIDNEY -->
+        <div class="card-wrap">
+          <div class="product-card">
+            <img src="images/tvstand/sidney.PNG" alt="SIDNEY TV Stand">
+            <div class="body">
+              <h6>SIDNEY TV Stand</h6>
+              <div class="meta">(OAK/Black)</div>
+              <div class="actions">
+                <a class="btn btn-sm btn-outline-dark" data-toggle="modal" data-target="#mdl-tv-sidney">Details</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ANGOLA -->
+        <div class="card-wrap">
+          <div class="product-card">
+            <img src="images/tvstand/angola.PNG" alt="ANGOLA TV Stand">
+            <div class="body">
+              <h6>ANGOLA TV Stand</h6>
+              <div class="meta">(OAK/White)</div>
+              <div class="actions">
+                <a class="btn btn-sm btn-outline-dark" data-toggle="modal" data-target="#mdl-tv-angola">Details</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <button class="cards-arrow next" aria-label="Next">›</button>
+    </div>
+  </div>
+</section>
+
+<!-- ===== Modals TV Units (une image “sheet”) ===== -->
+
+<!-- GLASGOW -->
+<div class="modal fade model-modal" id="mdl-tv-glasgow" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered"><div class="modal-content">
+    <div class="modal-header"><h5 class="modal-title">GLASGOW TV Stand</h5>
+      <button type="button" class="close" data-dismiss="modal"><span>×</span></button></div>
+    <div class="modal-body">
+      <figure class="sheet-wrap"><img class="sheet-img" src="images/tvstand/glasgowkol.PNG" alt="GLASGOW TV Stand – views"></figure>
+      <ul class="specs">
+        <li>Material: <em>100% melamine-coated particle board</em></li>
+        <li>Thickness: <em>18&nbsp;mm</em></li>
+        <li>Legs: <em>Plastic</em> (height <em>12&nbsp;cm</em>)</li>
+        <li>Size: <em>W 140&nbsp;cm × H 52&nbsp;cm × D 35&nbsp;cm</em></li>
+        <li>Shelf height: <em>18&nbsp;cm</em></li>
+        <li>Numerous shelves • Can be fixed to the wall</li>
+      </ul>
+    </div>
+  </div></div>
+</div>
+
+<!-- MAKU -->
+<div class="modal fade model-modal" id="mdl-tv-maku" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered"><div class="modal-content">
+    <div class="modal-header"><h5 class="modal-title">MAKU TV Stand</h5>
+      <button type="button" class="close" data-dismiss="modal"><span>×</span></button></div>
+    <div class="modal-body">
+      <figure class="sheet-wrap"><img class="sheet-img" src="images/tvstand/makukol.PNG" alt="MAKU TV Stand – views"></figure>
+      <ul class="specs">
+        <li>Material: <em>100% melamine-coated particle board</em></li>
+        <li>Thickness: <em>18&nbsp;mm</em></li>
+        <li>Size: <em>W 120&nbsp;cm × H 47&nbsp;cm × D 35&nbsp;cm</em></li>
+        <li>Chest width: <em>60&nbsp;cm</em></li>
+        <li>Leg height: <em>12&nbsp;cm</em></li>
+        <li>Numerous shelves • Can be fixed to the wall</li>
+      </ul>
+    </div>
+  </div></div>
+</div>
+
+<!-- RANBUTY -->
+<div class="modal fade model-modal" id="mdl-tv-ranbuty" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered"><div class="modal-content">
+    <div class="modal-header"><h5 class="modal-title">RANBUTY TV Set</h5>
+      <button type="button" class="close" data-dismiss="modal"><span>×</span></button></div>
+    <div class="modal-body">
+      <figure class="sheet-wrap"><img class="sheet-img" src="images/tvstand/rambutykol.PNG" alt="RANBUTY TV Set – views"></figure>
+      <ul class="specs">
+        <li>Material: <em>100% melamine-coated particle board</em> • Thickness <em>18&nbsp;mm</em></li>
+        <li>Wall shelf: <em>W 140 × H 15 × D 25&nbsp;cm</em></li>
+        <li>Tall cabinet: <em>W 50 × H 154 × D 25&nbsp;cm</em></li>
+        <li>TV stand: <em>W 170 × H 37 × D 37&nbsp;cm</em></li>
+        <li>Leg height: <em>12&nbsp;cm</em> • Numerous shelves • Wall-fixable</li>
+      </ul>
+    </div>
+  </div></div>
+</div>
+
+<!-- RUST -->
+<div class="modal fade model-modal" id="mdl-tv-rust" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered"><div class="modal-content">
+    <div class="modal-header"><h5 class="modal-title">RUST TV Stand</h5>
+      <button type="button" class="close" data-dismiss="modal"><span>×</span></button></div>
+    <div class="modal-body">
+      <figure class="sheet-wrap"><img class="sheet-img" src="images/tvstand/rustkol.PNG" alt="RUST TV Stand – views"></figure>
+      <ul class="specs">
+        <li>Material: <em>100% melamine-coated particle board</em></li>
+        <li>Thickness: <em>18&nbsp;mm</em></li>
+        <li>Size: <em>W 180&nbsp;cm × H 30&nbsp;cm × D 25&nbsp;cm</em></li>
+        <li>Numerous shelves • Can be fixed to the wall</li>
+      </ul>
+    </div>
+  </div></div>
+</div>
+
+<!-- SIDNEY -->
+<div class="modal fade model-modal" id="mdl-tv-sidney" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered"><div class="modal-content">
+    <div class="modal-header"><h5 class="modal-title">SIDNEY TV Stand</h5>
+      <button type="button" class="close" data-dismiss="modal"><span>×</span></button></div>
+    <div class="modal-body">
+      <figure class="sheet-wrap"><img class="sheet-img" src="images/tvstand/sidneykol.PNG" alt="SIDNEY TV Stand – views"></figure>
+      <ul class="specs">
+        <li>Material: <em>100% melamine-coated particle board</em></li>
+        <li>Thickness: <em>18&nbsp;mm</em></li>
+        <li>Legs: <em>Plastic</em></li>
+        <li>Size: <em>W 150&nbsp;cm × H 40&nbsp;cm × D 50&nbsp;cm</em></li>
+        <li>Numerous shelves • Can be fixed to the wall</li>
+      </ul>
+    </div>
+  </div></div>
+</div>
+
+<!-- ANGOLA -->
+<div class="modal fade model-modal" id="mdl-tv-angola" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered"><div class="modal-content">
+    <div class="modal-header"><h5 class="modal-title">ANGOLA TV Stand</h5>
+      <button type="button" class="close" data-dismiss="modal"><span>×</span></button></div>
+    <div class="modal-body">
+      <figure class="sheet-wrap"><img class="sheet-img" src="images/tvstand/angolakol.PNG" alt="ANGOLA TV Stand – views"></figure>
+      <ul class="specs">
+        <li>Material: <em>100% melamine-coated particle board</em></li>
+        <li>Thickness: <em>18&nbsp;mm</em></li>
+        <li>Legs: <em>Plastic</em></li>
+        <li>Size: <em>W 140&nbsp;cm × H 40&nbsp;cm × D 35&nbsp;cm</em></li>
+        <li>Shelf height: <em>18&nbsp;cm</em> • Numerous shelves • Wall-fixable</li>
+      </ul>
+    </div>
+  </div></div>
+</div>
+
+
+<!-- FOOTER -->
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-bottom">
+      <div>© <span id="year"></span> MELINAUSA LLC. All rights reserved.</div>
+      <div>
+        5691 Fox Hollow Drive, Unit B, Boca Raton, FL 33486 ·
+        <a href="tel:+19546971996">+1 (954) 697-1996</a> ·
+        <a href="mailto:melinausa07@gmail.com">melinausa07@gmail.com</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>document.getElementById('year').textContent = new Date().getFullYear();</script>
+
+<!-- JS -->
+<script src="js/jquery.min.js"></script>
+<script src="js/popper.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script>
+  // Slider générique
+  document.querySelectorAll('.cards-slider').forEach(slider=>{
+    const track = slider.querySelector('.cards-track');
+    const prev  = slider.querySelector('.cards-arrow.prev');
+    const next  = slider.querySelector('.cards-arrow.next');
+    const step  = ()=> {
+      const card = track.querySelector('.card-wrap');
+      return card ? card.getBoundingClientRect().width + 16 : track.clientWidth * .8;
+    };
+    prev && prev.addEventListener('click', ()=> track.scrollBy({left:-step(), behavior:'smooth'}));
+    next && next.addEventListener('click', ()=> track.scrollBy({left:+step(), behavior:'smooth'}));
+  });
+</script>
+</body>
+</html>
