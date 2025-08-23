@@ -1,0 +1,297 @@
+{{ include('partials/main.html.twig') }}
+
+<head>
+  {{ include('partials/title-meta.html.twig', {title: 'Dashboard'}) }}
+
+  <!-- jsvectormap css (si tu l'utilises ailleurs) -->
+  <link href="../../assets/libs/jsvectormap/jsvectormap.min.css" rel="stylesheet" type="text/css" />
+  <!--Swiper slider css (optionnel)-->
+  <link href="../../assets/libs/swiper/swiper-bundle.min.css" rel="stylesheet" type="text/css" />
+
+  {{ include('partials/head-css.html.twig') }}
+</head>
+
+<body>
+
+  <div id="layout-wrapper">
+    {{ include('partials/menu.html.twig') }}
+
+    <div class="main-content">
+      <div class="page-content">
+        <div class="container-fluid">
+
+          {# ========= HEADER ========= #}
+          <div class="row mb-3">
+            <div class="col-12">
+              <div class="d-flex align-items-lg-center flex-lg-row flex-column">
+                <div class="flex-grow-1">
+                  <h4 class="fs-16 mb-1">Tableau de bord</h4>
+                  {% if currentMonth %}
+  <div class="mb-3">
+    <span class="badge bg-secondary">Période affichée : {{ currentMonth }}</span>
+  </div>
+{% endif %}
+
+    <form method="get" class="mb-3 d-flex align-items-center" id="monthFilter">
+  <label class="me-2 mb-0 text-muted" for="month">Période :</label>
+  <input type="month" name="month" id="month"
+         value="{{ app.request.query.get('month') ?? (date()|date('Y-m')) }}"
+         class="form-control" style="max-width:220px;">
+  <button class="btn btn-primary ms-2">Appliquer</button>
+  {% if app.request.query.get('month') %}
+    <a href="{{ app.request.pathinfo }}" class="btn btn-link ms-2">Mois courant</a>
+  {% endif %}
+</form>
+
+                  <p class="text-muted mb-0">Synthèse ventes, achats, stock & productivité (mois en cours).</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {# ========= KPIs (4 cartes) ========= #}
+          <div class="row g-3">
+            <div class="col-xl-3 col-md-6">
+              <div class="card card-animate h-100">
+                <div class="card-body">
+                  <p class="text-uppercase fw-medium text-muted mb-2">Chiffre d'affaires Mensuel (HT)</p>
+                  <h4 class="fs-22 fw-semibold ff-secondary mb-2">
+                    {{ caMensuel|number_format(2, '.', ' ') }} TND
+                  </h4>
+                  <span class="badge bg-success-subtle text-success">Ventes (FV confirmées)</span>
+                </div>
+              </div>
+            </div>
+            <div class="col-xl-3 col-md-6">
+              <div class="card card-animate h-100">
+                <div class="card-body">
+                  <p class="text-uppercase fw-medium text-muted mb-2">Dépenses Mensuelles (HT)</p>
+                  <h4 class="fs-22 fw-semibold ff-secondary mb-2">
+                    {{ depMensuelles|number_format(2, '.', ' ') }} TND
+                  </h4>
+                  <span class="badge bg-warning-subtle text-warning">Achats (FA confirmées)</span>
+                </div>
+              </div>
+            </div>
+            <div class="col-xl-3 col-md-6">
+              <div class="card card-animate h-100">
+                <div class="card-body">
+                  <p class="text-uppercase fw-medium text-muted mb-2">Valeur du Stock (estimée)</p>
+                  <h4 class="fs-22 fw-semibold ff-secondary mb-2">
+                    {{ valStock|number_format(2, '.', ' ') }} TND
+                  </h4>
+                  <span class="badge bg-info-subtle text-info">qty × coût moyen</span>
+                </div>
+              </div>
+            </div>
+            <div class="col-xl-3 col-md-6">
+              <div class="card card-animate h-100">
+                <div class="card-body">
+                  <p class="text-uppercase fw-medium text-muted mb-2">Documents créés (mois)</p>
+                  <h4 class="fs-22 fw-semibold ff-secondary mb-2">{{ nbDocsMensuel }}</h4>
+                  <span class="badge bg-primary-subtle text-primary">Tous types</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {# ========= Graph CA 12 derniers mois + Top utilisateurs ========= #}
+          <div class="row g-3 mt-1">
+            <div class="col-xl-8">
+              <div class="card h-100">
+                <div class="card-header border-0 align-items-center d-flex">
+                  <h4 class="card-title mb-0 flex-grow-1">CA des 12 derniers mois (HT)</h4>
+                </div>
+                <div class="card-body">
+                  <div id="ca12moisChart" class="apex-charts" style="min-height: 320px;"></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-xl-4">
+              <div class="card h-100">
+                <div class="card-header align-items-center d-flex">
+                  <h4 class="card-title mb-0 flex-grow-1">Utilisateurs les plus actifs (mois)</h4>
+                </div>
+                <div class="card-body">
+                  <ol class="mb-0">
+                    {% for u in topUsers %}
+                      <li>Utilisateur #{{ u.user_id }} — <strong>{{ u.nb }}</strong> docs</li>
+                    {% else %}
+                      <li class="text-muted">Aucune donnée</li>
+                    {% endfor %}
+                  </ol>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {# ========= Top clients / Top fournisseurs ========= #}
+          <div class="row g-3 mt-1">
+            <div class="col-xl-6">
+              <div class="card h-100">
+                <div class="card-header align-items-center d-flex">
+                  <h4 class="card-title mb-0 flex-grow-1">Top 5 Clients par CA (mois en cours)</h4>
+                </div>
+                <div class="card-body">
+                  <div class="table-responsive table-card">
+                    <table class="table table-hover table-centered align-middle table-nowrap mb-0">
+                      <thead class="text-muted table-light">
+                        <tr>
+                          <th>#</th>
+                          <th>Client</th>
+                          <th class="text-end">CA (HT)</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {% for c in topClients %}
+                          <tr>
+                            <td>{{ loop.index }}</td>
+                            <td>{{ c.customer_name ?? ('#' ~ c.customer_id) }}</td>
+
+                            <td class="text-end">{{ c.ca|number_format(2, '.', ' ') }}</td>
+                          </tr>
+                        {% else %}
+                          <tr><td colspan="3" class="text-muted text-center">Aucune donnée</td></tr>
+                        {% endfor %}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-xl-6">
+              <div class="card h-100">
+                <div class="card-header align-items-center d-flex">
+                  <h4 class="card-title mb-0 flex-grow-1">Top 5 Fournisseurs (mois en cours)</h4>
+                </div>
+                <div class="card-body">
+                  <div class="table-responsive table-card">
+                    <table class="table table-hover table-centered align-middle table-nowrap mb-0">
+                      <thead class="text-muted table-light">
+                        <tr>
+                          <th>#</th>
+                          <th>Fournisseur</th>
+                          <th class="text-end">Total Achats (HT)</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {% for f in topFournisseurs %}
+                          <tr>
+                            <td>{{ loop.index }}</td>
+                            <td>{{ f.supplier_name ?? ('#' ~ f.supplier_id) }}</td><td class="text-end">{{ f.total|number_format(2, '.', ' ') }}</td>
+                          </tr>
+                        {% else %}
+                          <tr><td colspan="3" class="text-muted text-center">Aucune donnée</td></tr>
+                        {% endfor %}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {# ========= Ruptures de stock ========= #}
+          <div class="row g-3 mt-1">
+            <div class="col-12">
+              <div class="card">
+                <div class="card-header align-items-center d-flex">
+                  <h4 class="card-title mb-0 flex-grow-1">Articles en rupture</h4>
+                </div>
+                <div class="card-body">
+                  <div class="table-responsive table-card">
+                    <table class="table table-borderless table-centered align-middle table-nowrap mb-0">
+                      <thead class="text-muted table-light">
+                        <tr>
+                          <th>ID</th>
+                          <th>Article</th>
+                          <th class="text-end">Qté</th>
+                          <th class="text-end">Seuil</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {% for a in ruptures %}
+                          <tr class="table-warning">
+                            <td>{{ a.id }}</td>
+                            <td>{{ a.name }}</td>
+                            <td class="text-end">{{ a.qty }}</td>
+                            <td class="text-end">{{ a.reorder_threshold }}</td>
+                          </tr>
+                        {% else %}
+                          <tr><td colspan="4" class="text-muted text-center">Aucune rupture</td></tr>
+                        {% endfor %}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div> {# /container-fluid #}
+      </div> {# /page-content #}
+
+      {{ include('partials/footer.html.twig') }}
+    </div> {# /main-content #}
+  </div> {# /layout-wrapper #}
+
+  {{ include('partials/customizer.html.twig') }}
+  {{ include('partials/vendor-scripts.html.twig') }}
+<script>
+(async () => {
+  const qs = new URLSearchParams(window.location.search); // pour propager ?month=
+  const suffix = qs.toString() ? `?${qs}` : '';
+
+  try {
+    const [ca, dep, rupt] = await Promise.all([
+      fetch('{{ path("api_kpi_ca_mois") }}' + suffix).then(r=>r.json()),
+      fetch('{{ path("api_kpi_dep_mois") }}' + suffix).then(r=>r.json()),
+      fetch('{{ path("api_kpi_ruptures_count") }}' + suffix).then(r=>r.json()),
+    ]);
+    if (document.getElementById('badge-ca'))   document.getElementById('badge-ca').textContent   = (ca.value ?? 0).toLocaleString('fr-FR', {maximumFractionDigits:0});
+    if (document.getElementById('badge-dep'))  document.getElementById('badge-dep').textContent  = (dep.value ?? 0).toLocaleString('fr-FR', {maximumFractionDigits:0});
+    if (document.getElementById('badge-rupt')) document.getElementById('badge-rupt').textContent = rupt.value ?? 0;
+  } catch(e) { console.warn('Badges KPI: ', e); }
+})();
+</script>
+
+  <!-- apexcharts -->
+  <script src="../../assets/libs/apexcharts/apexcharts.min.js"></script>
+
+  <script>
+    // Graphe CA 12 derniers mois (ApexCharts + fetch)
+    (async function() {
+      try {
+        const res = await fetch('{{ path("api_stats_ca_12_mois") }}', { headers: { 'X-Requested-With': 'XMLHttpRequest' }});
+        const data = await res.json(); // [{label:"YYYY-MM", value:1234.56}, ...]
+
+        const labels = data.map(p => p.label);
+        const values = data.map(p => p.value);
+
+        const options = {
+          chart: { type: 'area', height: 320, toolbar: { show: false } },
+          dataLabels: { enabled: false },
+          stroke: { curve: 'smooth', width: 2 },
+          fill: { type: 'gradient', gradient: { shadeIntensity: 1, opacityFrom: 0.35, opacityTo: 0.05 } },
+          series: [{ name: 'CA (HT)', data: values }],
+          xaxis: { categories: labels, labels: { rotate: -15 } },
+          yaxis: { labels: { formatter: val => (val).toLocaleString('fr-FR') } },
+          tooltip: {
+            y: { formatter: val => `${Number(val).toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} TND` }
+          }
+        };
+
+        const chart = new ApexCharts(document.querySelector("#ca12moisChart"), options);
+        chart.render();
+      } catch (e) {
+        console.error('Erreur CA 12 mois:', e);
+      }
+    })();
+  </script>
+
+  <!-- App js -->
+  <script src="../../assets/js/app.js"></script>
+</body>
+</html>

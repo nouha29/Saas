@@ -1,0 +1,418 @@
+{{ include('partials/main.html.twig') }}
+
+<head>
+	{{ include('partials/title-meta.html.twig', {title: 'Tableau de Bord ERP'}) }}
+
+	<!-- plugin css -->
+	<link href="../../assets/libs/jsvectormap/jsvectormap.min.css" rel="stylesheet" type="text/css"/>
+
+	{{ include('partials/head-css.html.twig') }}
+
+	<style>
+		.card-stat {
+			border-left: 4px solid #0ab39c;
+		}
+		.card-stat-warning {
+			border-left: 4px solid #f7b84b;
+		}
+		.card-stat-danger {
+			border-left: 4px solid #f06548;
+		}
+		.stat-icon {
+			font-size: 22px;
+			background-color: rgba(10, 179, 156, 0.1);
+			height: 50px;
+			width: 50px;
+			line-height: 50px;
+			text-align: center;
+			border-radius: 50%;
+			color: #0ab39c;
+		}
+		.stat-icon-warning {
+			background-color: rgba(247, 184, 75, 0.1);
+			color: #f7b84b;
+		}
+		.stat-icon-danger {
+			background-color: rgba(240, 101, 72, 0.1);
+			color: #f06548;
+		}
+	</style>
+</head>
+
+<body>
+	<!-- Begin page -->
+	<div id="layout-wrapper">
+		{{ include('partials/menu.html.twig') }}
+
+		<!-- ============================================================== -->
+		<!-- Start right Content here -->
+		<!-- ============================================================== -->
+			<div class="main-content"> <div class="page-content">
+				<div class="container-fluid">
+					{{ include('partials/page-title.html.twig', {pagetitle: 'Tableau de Bord', title: 'Vue d\'ensemble'}) }}
+
+                    <div class="row">
+                        <!-- Statistiques principales -->
+                        <div class="col-xl-3 col-md-6">
+                            <div class="card card-animate card-stat">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between">
+                                        <div>
+                                            <p class="fw-medium text-muted mb-0">Chiffre d'Affaires</p>
+                                            <h2 class="mt-4 ff-secondary fw-semibold">
+                                                <span class="counter-value" data-target="{{ ca_mois|number_format(2, ',', ' ') }}">0</span> €
+                                            </h2>
+                                            <p class="mb-0 text-muted">
+                                                <span class="badge bg-light text-success mb-0">
+                                                    <i class="ri-arrow-up-line align-middle"></i> {{ evolution_ca }}
+					%
+				</span>
+				vs. mois dernier
+			</p>
+		</div>
+		<div>
+			<div class="avatar-sm flex-shrink-0">
+				<span class="avatar-title bg-info-subtle rounded-circle fs-2">
+					<i data-feather="dollar-sign" class="text-info"></i>
+				</span>
+			</div>
+		</div>
+	</div>
+</body></div></div></div><div class="col-xl-3 col-md-6"><div class="card card-animate card-stat"><div class="card-body">
+<div class="d-flex justify-content-between">
+	<div>
+		<p class="fw-medium text-muted mb-0">Commandes en cours</p>
+		<h2 class="mt-4 ff-secondary fw-semibold">
+			<span class="counter-value" data-target="{{ commandes_encours }}">0</span>
+		</h2>
+		<p class="mb-0 text-muted">
+			<span class="badge bg-light text-success mb-0">
+				<i class="ri-arrow-up-line align-middle"></i>
+				{{ evolution_commandes }}
+				%
+			</span>
+			vs. mois dernier
+		</p>
+	</div>
+	<div>
+		<div class="avatar-sm flex-shrink-0">
+			<span class="avatar-title bg-info-subtle rounded-circle fs-2">
+				<i data-feather="shopping-cart" class="text-info"></i>
+			</span>
+		</div>
+	</div>
+</div></div></div></div><div class="col-xl-3 col-md-6"><div class="card card-animate card-stat-warning"><div class="card-body">
+<div class="d-flex justify-content-between">
+	<div>
+		<p class="fw-medium text-muted mb-0">Stocks Faibles</p>
+		<h2 class="mt-4 ff-secondary fw-semibold">
+			<span class="counter-value" data-target="{{ stocks_faibles }}">0</span>
+		</h2>
+		<p class="mb-0 text-muted">Articles à réapprovisionner</p>
+	</div>
+	<div>
+		<div class="avatar-sm flex-shrink-0">
+			<span class="avatar-title bg-warning-subtle rounded-circle fs-2">
+				<i data-feather="alert-triangle" class="text-warning"></i>
+			</span>
+		</div>
+	</div>
+</div></div></div></div><div class="col-xl-3 col-md-6"><div class="card card-animate card-stat-danger"><div class="card-body">
+<div class="d-flex justify-content-between">
+	<div>
+		<p class="fw-medium text-muted mb-0">Documents en attente</p>
+		<h2 class="mt-4 ff-secondary fw-semibold">
+			<span class="counter-value" data-target="{{ documents_attente }}">0</span>
+		</h2>
+		<p class="mb-0 text-muted">En attente de validation</p>
+	</div>
+	<div>
+		<div class="avatar-sm flex-shrink-0">
+			<span class="avatar-title bg-danger-subtle rounded-circle fs-2">
+				<i data-feather="clock" class="text-danger"></i>
+			</span>
+		</div>
+	</div>
+</div></div></div></div></div><divclass="row"><!-- Graphique CA vs Dépenses --><div class="col-xl-8"><div class="card"><div class="card-header align-items-center d-flex">
+<h4 class="card-title mb-0 flex-grow-1">Évolution du Chiffre d'Affaires</h4>
+<div class="flex-shrink-0">
+	<div class="dropdown">
+		<a class="text-reset dropdown-btn" href="#" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+			<span class="fw-semibold text-uppercase fs-12">Mensuel</span>
+		</a>
+	</div>
+</div></div><div class="card-body">
+<div id="ca-chart" data-colors='["--vz-success", "--vz-primary"]' class="apex-charts" dir="ltr"></div></div></div></div><!-- Statistiques documents --><div class="col-xl-4"><div class="card"><div class="card-header align-items-center d-flex">
+<h4 class="card-title mb-0 flex-grow-1">Répartition des Documents</h4></div><div class="card-body">
+<div id="documents-chart" data-colors='["--vz-primary", "--vz-success", "--vz-warning", "--vz-danger", "--vz-info"]' class="apex-charts" dir="ltr"></div>
+
+<div class="mt-3">
+	<div class="d-flex align-items-center mb-2">
+		<div class="flex-grow-1">
+			<p class="text-truncate text-muted fs-14 mb-0">
+				<i class="mdi mdi-circle align-middle text-primary me-2"></i>
+				Factures Vente
+			</p>
+		</div>
+		<div class="flex-shrink-0">
+			<p class="mb-0">{{ stats_documents['Facture vente'] ?? 0 }}</p>
+		</div>
+	</div>
+	<div class="d-flex align-items-center mb-2">
+		<div class="flex-grow-1">
+			<p class="text-truncate text-muted fs-14 mb-0">
+				<i class="mdi mdi-circle align-middle text-success me-2"></i>
+				Commandes Achat
+			</p>
+		</div>
+		<div class="flex-shrink-0">
+			<p class="mb-0">{{ stats_documents['Commande achat'] ?? 0 }}</p>
+		</div>
+	</div>
+	<div class="d-flex align-items-center mb-2">
+		<div class="flex-grow-1">
+			<p class="text-truncate text-muted fs-14 mb-0">
+				<i class="mdi mdi-circle align-middle text-warning me-2"></i>
+				Devis
+			</p>
+		</div>
+		<div class="flex-shrink-0">
+			<p class="mb-0">{{ (stats_documents['Devis achat'] ?? 0) + (stats_documents['Devis vente'] ?? 0) }}</p>
+		</div>
+	</div>
+	<div class="d-flex align-items-center mb-2">
+		<div class="flex-grow-1">
+			<p class="text-truncate text-muted fs-14 mb-0">
+				<i class="mdi mdi-circle align-middle text-danger me-2"></i>
+				Bons d'Entrée/Sortie
+			</p>
+		</div>
+		<div class="flex-shrink-0">
+			<p class="mb-0">{{ (stats_documents['Bon entré'] ?? 0) + (stats_documents['Bon de sortie'] ?? 0) }}</p>
+		</div>
+	</div>
+</div></div></div></div></div><divclass="row"><!-- Stocks faibles --><div class="col-xl-6"><div class="card"><div class="card-header align-items-center d-flex">
+<h4 class="card-title mb-0 flex-grow-1">Stocks Faibles</h4>
+<div class="flex-shrink-0">
+	<a href="{{ path('app_stock_index') }}" class="btn btn-soft-primary btn-sm">Voir tous les stocks</a>
+</div></div><div class="card-body">
+<div class="table-responsive">
+	<table class="table table-borderless table-centered align-middle table-nowrap mb-0">
+		<thead class="text-muted border-dashed border border-start-0 border-end-0 bg-light-subtle">
+			<tr>
+				<th>Article</th>
+				<th>Référence</th>
+				<th>Dépôt</th>
+				<th>Stock Actuel</th>
+				<th>Action</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for stock in alertes_stocks %}
+				<tr>
+					<td>
+						<div class="d-flex align-items-center">
+							<div class="flex-shrink-0 me-2">
+								<i data-feather="package" class="text-warning"></i>
+							</div>
+							<div class="flex-grow-1">Article
+								{{ stock.article_id }}</div>
+						</div>
+					</td>
+					<td>{{ stock.reference }}</td>
+					<td>Dépôt
+						{{ stock.depot_id }}</td>
+					<td>
+						<span class="text-danger fw-semibold">{{ stock.qte_stock_dispo }}</span>
+					</td>
+					<td>
+						<a href="{{ path('app_commande_achat_new') }}" class="btn btn-sm btn-soft-warning">Commander</a>
+					</td>
+				</tr>
+			{% else %}
+				<tr>
+					<td colspan="5" class="text-center">Aucun stock faible</td>
+				</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+</div></div></div></div><!-- Documents récents --><div class="col-xl-6"><div class="card"><div class="card-header align-items-center d-flex">
+<h4 class="card-title mb-0 flex-grow-1">Documents Récents</h4>
+<div class="flex-shrink-0">
+	<a href="{{ path('app_documents_index') }}" class="btn btn-soft-primary btn-sm">Voir tous</a>
+</div></div><div class="card-body">
+<div class="table-responsive">
+	<table class="table table-borderless table-centered align-middle table-nowrap mb-0">
+		<thead class="text-muted border-dashed border border-start-0 border-end-0 bg-light-subtle">
+			<tr>
+				<th>Référence</th>
+				<th>Type</th>
+				<th>Date</th>
+				<th>Montant</th>
+				<th>Statut</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for document in documents_recents %}
+				<tr>
+					<td>
+						<a href="{{ path('app_documents_show', {'id': document.id}) }}" class="fw-medium">{{ document.reference }}</a>
+					</td>
+					<td>{{ document.type }}</td>
+					<td>{{ document.doc_date|date('d/m/Y') }}</td>
+					<td>{{ document.montant_ht|number_format(2, ',', ' ') }}
+						€</td>
+					<td>
+						{% if document.statut == 'Confirmé' %}
+							<span class="badge bg-success">{{ document.statut }}</span>
+						{% elseif document.statut == 'Ouvert' %}
+							<span class="badge bg-warning">{{ document.statut }}</span>
+						{% else %}
+							<span class="badge bg-secondary">{{ document.statut }}</span>
+						{% endif %}
+					</td>
+				</tr>
+			{% else %}
+				<tr>
+					<td colspan="5" class="text-center">Aucun document récent</td>
+				</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+</div></div></div></div></div><divclass="row"><!-- Top articles --><div class="col-xl-6"><div class="card"><div class="card-header align-items-center d-flex">
+<h4 class="card-title mb-0 flex-grow-1">Articles les Plus Vendus</h4></div><div class="card-body">
+<div id="top-articles-chart" data-colors='["--vz-primary", "--vz-success", "--vz-warning", "--vz-info", "--vz-danger"]' class="apex-charts" dir="ltr"></div></div></div></div><!-- Activité récente --><div class="col-xl-6"><div class="card"><div class="card-header align-items-center d-flex">
+<h4 class="card-title mb-0 flex-grow-1">Activité Récente</h4></div><div class="card-body">
+<div class="simplebar-wrapper" style="max-height: 365px;">
+	<div data-simplebar style="height: 365px;">
+		{% for activite in activites_recentes %}
+			<div class="d-flex align-items-center mb-4">
+				<div class="flex-shrink-0">
+					<div class="stat-icon">
+						<i data-feather="{{ activite.icon }}"></i>
+					</div>
+				</div>
+				<div class="flex-grow-1 ms-3">
+					<h6 class="mb-1">{{ activite.titre }}</h6>
+					<p class="text-muted mb-0">{{ activite.description }}</p>
+					<ul class="list-inline mb-0">
+						<li class="list-inline-item">{{ activite.date|date('d/m/Y H:i') }}</li>
+					</ul>
+				</div>
+			</div>
+		{% else %}
+			<p class="text-muted text-center">Aucune activité récente</p>
+		{% endfor %}
+	</div>
+</div></div></div></div></div></div></div>{{ include('partials/footer.html.twig') }}</div></div>{{ include('partials/customizer.html.twig') }}{{ include('partials/vendor-scripts.html.twig') }}<script src="../../assets/libs/apexcharts/apexcharts.min.js"></script><script src="../../assets/libs/jsvectormap/jsvectormap.min.js"></script><script src="../../assets/js/pages/dashboard-analytics.init.js"></script><script src="../../assets/js/app.js"></script><script>document.addEventListener("DOMContentLoaded", function () { // Chart CA vs Dépenses
+var options = {
+series: [
+{
+name: 'Chiffre d\'Affaires',
+data: {{ ca_data|raw }}
+}, {
+name: 'Dépenses',
+data: {{ depenses_data|raw }}
+}
+],
+chart: {
+height: 350,
+type: 'area',
+toolbar: {
+show: false
+}
+},
+colors: [
+'#0ab39c', '#f7b84b'
+],
+dataLabels: {
+enabled: false
+},
+stroke: {
+curve: 'smooth',
+width: 2
+},
+fill: {
+type: 'gradient',
+gradient: {
+shadeIntensity: 1,
+inverseColors: false,
+opacityFrom: 0.45,
+opacityTo: 0.05,
+stops: [20, 100, 100, 100]
+}
+},
+xaxis: {
+categories: {{ mois_labels|raw }}
+},
+tooltip: {
+y: {
+formatter: function (val) {
+return val + " €";
+}
+}
+}
+};
+
+var chart = new ApexCharts(document.querySelector("#ca-chart"), options);
+chart.render();
+
+// Chart répartition documents
+var documentChart = {
+series: {{ documents_series|raw }},
+chart: {
+type: 'donut',
+height: 320
+},
+labels: {{ documents_labels|raw }},
+colors: [
+'#405189',
+'#0ab39c',
+'#f7b84b',
+'#f06548',
+'#3577f1'
+],
+legend: {
+position: 'bottom'
+},
+plotOptions: {
+pie: {
+donut: {
+size: '65%'
+}
+}
+}
+};
+
+var chart2 = new ApexCharts(document.querySelector("#documents-chart"), documentChart);
+chart2.render();
+
+// Chart top articles
+var topArticlesChart = {
+series: [
+{
+data: {{ top_articles_values|raw }}
+}
+],
+chart: {
+type: 'bar',
+height: 320
+},
+plotOptions: {
+bar: {
+borderRadius: 4,
+horizontal: true
+}
+},
+dataLabels: {
+enabled: false
+},
+xaxis: {
+categories: {{ top_articles_labels|raw }}
+},
+colors: ['#0ab39c']
+};
+
+var chart3 = new ApexCharts(document.querySelector("#top-articles-chart"), topArticlesChart);
+chart3.render();
+});</script></body> </html>

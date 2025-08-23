@@ -1,0 +1,68 @@
+{{ include('partials/main.html.twig') }}
+<head>
+  {{ include('partials/title-meta.html.twig', {title: 'Statistiques - Achats'}) }}
+  
+  {{ include('partials/head-css.html.twig') }}
+</head>
+<body>
+<div id="layout-wrapper">
+  {{ include('partials/menu.html.twig') }}
+  <div class="main-content">
+    <div class="page-content"><div class="container-fluid">
+
+      <h4 class="mb-3">Achats</h4>
+      {% if currentMonth %}
+  <div class="mb-3">
+    <span class="badge bg-secondary">Période affichée : {{ currentMonth }}</span>
+  </div>
+{% endif %}
+
+  <form method="get" class="mb-3 d-flex align-items-center" id="monthFilter">
+  <label class="me-2 mb-0 text-muted" for="month">Période :</label>
+  <input type="month" name="month" id="month"
+         value="{{ app.request.query.get('month') ?? (date()|date('Y-m')) }}"
+         class="form-control" style="max-width:220px;">
+  <button class="btn btn-primary ms-2">Appliquer</button>
+  {% if app.request.query.get('month') %}
+    <a href="{{ app.request.pathinfo }}" class="btn btn-link ms-2">Mois courant</a>
+  {% endif %}
+</form>
+      <div class="card mb-3"><div class="card-body">
+        <h6 class="mb-2">Dépenses par jour (mois courant)</h6>
+        <div id="chartDepJour" style="min-height:300px"></div>
+      </div></div>
+
+      <div class="card"><div class="card-body">
+        <h6 class="mb-3">Top Fournisseurs (mois courant)</h6>
+        <table class="table table-sm">
+          <thead><tr><th>#</th><th>Fournisseur</th><th class="text-end">Total (HT)</th></tr></thead>
+          <tbody>
+            {% for f in topFournisseurs %}
+              <tr><td>{{ f.supplier_name ?? ('#' ~ f.supplier_id) }}</td><td class="text-end">{{ f.total|number_format(2,'.',' ') }}</td></tr>
+            {% else %}
+              <tr><td colspan="3" class="text-muted text-center">Aucune donnée</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div></div>
+
+    </div></div>
+    {{ include('partials/footer.html.twig') }}
+  </div>
+</div>
+{{ include('partials/vendor-scripts.html.twig') }}
+<script src="{{ asset('assets/libs/apexcharts/apexcharts.min.js') }}"></script>
+<script>
+(async () => {
+  const r = await fetch('{{ path("api_stats_achats_dep_jour") }}');
+  const data = await r.json();
+  const options = {
+    chart:{ type:'bar', height:300, toolbar:{show:false}},
+    series:[{ name:'Dépenses (HT)', data: data.map(d=>d.value) }],
+    xaxis:{ categories: data.map(d=>d.label) }
+  };
+  new ApexCharts(document.querySelector('#chartDepJour'), options).render();
+})();
+</script>
+</body>
+</html>

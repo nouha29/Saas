@@ -1,0 +1,109 @@
+{{ include('partials/main.html.twig') }}
+
+<head>
+    {{ include('partials/title-meta.html.twig', {title: 'Functions List'}) }}
+    <link rel="stylesheet" href="{{ asset('assets/libs/sweetalert2/sweetalert2.min.css') }}" />
+    <link href="{{ asset('assets/css/bootstrap.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('assets/css/icons.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('assets/css/app.min.css') }}" rel="stylesheet">
+</head>
+
+<body>
+    <div id="layout-wrapper">
+        {{ include('partials/menu.html.twig') }}
+        <div class="main-content">
+            <div class="page-content">
+                <div class="container-fluid">
+                    {{ include('partials/page-title.html.twig', {pagetitle: 'Functions', title: 'List'}) }}
+
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="row mb-2">
+                                        <div class="col-sm-4">
+                                            <a href="{{ path('app_functions_new') }}" class="btn btn-success mb-2">
+                                                <i class="ri-add-line align-bottom me-1"></i> Create Function
+                                            </a>
+                                        </div>
+                                        <div class="col-sm-8">
+                                            <div class="text-sm-end">
+                                                <!-- You can add search or other filters here if needed -->
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="table-responsive">
+                                        <table class="table table-centered table-nowrap mb-0">
+                                            <thead class="table-light">
+                                                <tr>
+                                                    <th>ID</th>
+                                                    <th>Title</th>
+                                                    <th>Actions</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {% for function in functions %}
+                                                <tr>
+                                                    <td>{{ function.id }}</td>
+                                                    <td>{{ function.intitule }}</td>
+                                                    <td>
+                                                        <div class="d-flex gap-3">
+                                                            <a href="{{ path('app_functions_edit', {'id': function.id}) }}" class="btn btn-sm btn-primary">
+                                                                <i class="ri-pencil-line"></i>
+                                                            </a>
+                                                            <form method="post" action="{{ path('app_functions_delete', {'id': function.id}) }}" onsubmit="return confirm('Are you sure you want to delete this function?');">
+                                                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ function.id) }}">
+                                                                <button class="btn btn-sm btn-danger">
+                                                                    <i class="ri-delete-bin-line"></i>
+                                                                </button>
+                                                            </form>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                {% else %}
+                                                <tr>
+                                                    <td colspan="3" class="text-center">No functions found</td>
+                                                </tr>
+                                                {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {{ include('partials/footer.html.twig') }}
+        </div>
+    </div>
+
+    {{ include('partials/vendor-scripts.html.twig') }}
+    <script src="{{ asset('assets/libs/sweetalert2/sweetalert2.min.js') }}"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const deleteButtons = document.querySelectorAll('.btn-danger');
+            deleteButtons.forEach(button => {
+                button.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const form = this.closest('form');
+                    Swal.fire({
+                        title: 'Are you sure?',
+                        text: "You won't be able to revert this!",
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: 'Yes, delete it!'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            form.submit();
+                        }
+                    });
+                });
+            });
+        });
+    </script>
+</body>
+</html>

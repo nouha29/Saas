@@ -1,0 +1,432 @@
+{{ include('partials/main.html.twig') }}
+<head>
+    {{ include('partials/title-meta.html.twig', {title: document.id ? 'Modifier un document' : 'Créer un document'}) }}
+    <link rel="stylesheet" href="{{ asset('assets/libs/dropzone/dropzone.css') }}" type="text/css"/>
+    <link href="{{ asset('assets/libs/sweetalert2/sweetalert2.min.css') }}" rel="stylesheet" type="text/css"/>
+    <link href="{{ asset('assets/css/bootstrap.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('assets/css/icons.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('assets/css/app.min.css') }}" rel="stylesheet">
+    <style>
+        .ligne-row td {
+            vertical-align: middle !important;
+        }
+        .form-control-sm {
+            height: calc(1.5em + 0.5rem + 2px);
+            padding: 0.25rem 0.5rem;
+            font-size: 0.875rem;
+            line-height: 1.5;
+            border-radius: 0.2rem;
+        }
+        .input-group-sm > .form-control {
+            height: calc(1.5em + 0.5rem + 2px);
+            padding: 0.25rem 0.5rem;
+            font-size: 0.875rem;
+            line-height: 1.5;
+        }
+        .readonly-type {
+            background-color: #f8f9fa;
+            border: 1px solid #ced4da;
+            border-radius: 0.25rem;
+            padding: 0.375rem 0.75rem;
+            height: calc(3.5rem + 2px);
+        }
+    </style>
+</head>
+
+<body>
+    <div id="layout-wrapper">
+        {{ include('partials/menu.html.twig') }}
+
+        <div class="main-content">
+            <div class="page-content">
+                <div class="container-fluid">
+                    {{ include('partials/page-title.html.twig', {
+                        pagetitle: 'Documents',
+                        title: document.id ? 'Modifier un document' : 'Créer un document'
+                    }) }}
+
+                    <div class="row justify-content-center">
+                        <div class="col-xxl-9">
+                            <div class="card">
+                                {{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': 'novalidate'}}) }}
+                                <div class="card-body border-bottom border-bottom-dashed p-4">
+                                    <div class="row">
+                                        <div class="col-lg-4">
+                                            <div class="profile-user mx-auto mb-3">
+                                                <input id="profile-img-file-input" type="file" class="profile-img-file-input"/>
+                                                <label for="profile-img-file-input" class="d-block" tabindex="0">
+                                                    <span class="overflow-hidden border border-dashed d-flex align-items-center justify-content-center rounded" style="height: 60px; width: 256px;">
+                                                        <img src="{{ asset('assets/images/logo-dark.png') }}" class="card-logo card-logo-dark user-profile-image img-fluid" alt="logo dark">
+                                                        <img src="{{ asset('assets/images/logo-light.png') }}" class="card-logo card-logo-light user-profile-image img-fluid" alt="logo light">
+                                                    </span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-4 ms-auto">
+                                            <div class="mb-3">
+                                                <label class="form-label">Référence</label>
+                                                {% if document.id %}
+                                                    <div class="form-control bg-light border-0">{{ form.reference.vars.value }}</div>
+                                                {% else %}
+                                                    <div id="reference-preview" class="form-control bg-light border-0">{{ form.vars.reference ?? 'La référence sera générée automatiquement' }}</div>
+                                                {% endif %}
+
+                                                {{ form_widget(form.reference, {'attr': {'class': document.id ? 'd-none' : 'd-none'}}) }}
+                                            </div>
+                                            {{ form_row(form.docDate, {
+                                                'attr': {
+                                                    'class': 'form-control' ~ (document.id ? '' : ' bg-light border-0')
+                                                }, 
+                                                'label': 'Date'
+                                            }) }}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="card-body p-4">
+                                    <div class="row g-3">
+                                        <div class="col-lg-3 col-sm-6">
+											{% if current_type %}
+												<div class="mb-3">
+													<label class="form-label">Type</label>
+													<div class="form-control bg-light border-0">
+														{{ current_type }}
+													</div>
+												</div>
+											{% endif %}
+											
+											{% if document.id == null %}
+											{{ form_row(form.type) }}
+											{% endif %}
+										</div>
+
+                                       <div class="col-lg-3 col-sm-6">
+                                            {{ form_row(form.status, {
+                                                'attr': {'class': 'form-control'},
+                                                'label': 'Statut'
+                                            }) }}
+                                        </div>
+                                        <div class="col-lg-3 col-sm-6">
+                                            {{ form_row(form.emetteur, {
+                                                'attr': {'class': 'form-control'},
+                                                'label': 'Émetteur'
+                                            }) }}
+                                        </div>
+                                        <div class="col-lg-3 col-sm-6">
+                                            {{ form_row(form.destinataire, {
+                                                'attr': {'class': 'form-control'},
+                                                'label': 'Destinataire'
+                                            }) }}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="card-body p-4 border-top border-top-dashed">
+                                    <h5 class="mb-3">Lignes du document</h5>
+                                    <div class="table-responsive">
+                                        <table class="invoice-table table table-borderless table-nowrap mb-0">
+                                            <thead class="align-middle">
+                                                <tr class="table-active">
+                                                    <th class="col">#</th>
+                                                    <th class="col">Article</th>
+                                                    <th class="col">Prix unitaire</th>
+                                                    <th class="col">Quantité</th>
+                                                    <th class="col">Montant</th>
+                                                    <th class="col text-end">Remise</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="document-lignes" data-prototype="{{ form_widget(form.lignes.vars.prototype)|e('html_attr') }}" data-index="{{ form.lignes|length }}">
+                                                {% for ligne in form.lignes %}
+                                                    <tr class="ligne-row">
+                                                        <td>{{ loop.index }}</td>
+                                                        <td>{{ form_widget(ligne.article, {'attr': {'class': 'form-control'}}) }}</td>
+                                                        <td>{{ form_widget(ligne.prixUnitaireHt, {
+                                                                'attr': {
+                                                                    'class': 'form-control',
+                                                                    'onchange': 'updateLigneTotal(this)'
+                                                                },
+                                                                'label': false
+                                                            }) }}</td>
+                                                        <td>{{ form_widget(ligne.qte, {
+                                                                'attr': {
+                                                                    'class': 'form-control',
+                                                                    'onchange': 'updateLigneTotal(this)'
+                                                                },
+                                                                'label': false
+                                                            }) }}</td>
+                                                        <td>{{ form_widget(ligne.prixTotalHt, {
+                                                                'attr': {
+                                                                    'class': 'form-control bg-light border-0',
+                                                                    'readonly': 'readonly'
+                                                                },
+                                                                'label': false
+                                                            }) }}</td>
+
+                                                        <td class="text-end">{{ form_widget(ligne.remise, {
+                                                                'attr': {
+                                                                    'class': 'form-control bg-light border-0',
+                                                                    'readonly': 'readonly'
+                                                                },
+                                                                'label': false
+                                                            }) }}
+                                                            <button type="button" class="btn btn-sm btn-danger remove-ligne">
+                                                                <i class="ri-delete-bin-line"></i>
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                {% endfor %}
+                                            </tbody>
+                                            <tfoot>
+                                                <tr>
+                                                    <td colspan="6">
+                                                        <button type="button" id="add-ligne" class="btn btn-soft-secondary fw-medium">
+                                                            <i class="ri-add-fill me-1 align-bottom"></i>
+                                                            Ajouter une ligne
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            </tfoot>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div class="card-body p-4">
+                                    <div class="row">
+                                        <div class="col-lg-4">
+                                            {{ form_row(form.montantHt, {
+                                                    'attr': {
+                                                        'class': 'form-control bg-light border-0',
+                                                        'readonly': 'readonly'
+                                                    },
+                                                    'label': 'Montant HT'
+                                                }) }}
+                                            {{ form_row(form.tauxTva, {
+                                                    'attr': {
+                                                        'class': 'form-control',
+                                                        'onchange': 'updateTotals()'
+                                                    },
+                                                    'label': 'Taux TVA'
+                                                }) }}
+                                            {{ form_row(form.montantTva, {
+                                                    'attr': {
+                                                        'class': 'form-control bg-light border-0',
+                                                        'readonly': 'readonly'
+                                                    },
+                                                    'label': 'Montant TVA'
+                                                }) }}
+                                            {{ form_row(form.montantAPayer, {
+                                                    'attr': {
+                                                        'class': 'form-control bg-light border-0',
+                                                        'readonly': 'readonly'
+                                                    },
+                                                    'label': 'Montant à payer'
+                                                }) }}
+                                        </div>
+                                        <div class="col-lg-4">
+                                            {{ form_row(form.timbre, {
+                                                    'attr': {
+                                                        'class': 'form-control',
+                                                        'onchange': 'updateTotals()'
+                                                    },
+                                                    'label': 'Timbre'
+                                                }) }}
+                                            {{ form_row(form.retenu, {
+                                                    'attr': {
+                                                        'class': 'form-control',
+                                                        'onchange': 'updateTotals()'
+                                                    },
+                                                    'label': 'Retenue'
+                                                }) }}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="card-body p-4">
+                                    <div class="hstack gap-2 justify-content-end">
+                                        <button type="submit" class="btn btn-success">
+                                            <i class="ri-save-line align-bottom me-1"></i>
+                                            {{ document.id ? 'Mettre à jour' : 'Enregistrer' }}
+                                        </button>
+                                        <a href="{{ path('app_documents_index') }}" class="btn btn-light">
+                                            Annuler
+                                        </a>
+                                    </div>
+                                </div>
+                                {{ form_end(form) }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {{ include('partials/footer.html.twig') }}
+        </div>
+    </div>
+    {{ include('partials/vendor-scripts.html.twig') }}
+    <script src="{{ asset('assets/libs/dropzone/dropzone-min.js') }}"></script>
+    <script src="{{ asset('assets/libs/sweetalert2/sweetalert2.min.js') }}"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const ligneCollection = document.getElementById('document-lignes');
+            let index = parseInt(ligneCollection.dataset.index);
+            const form = document.querySelector('form');
+            function updateReferencePreview() {
+				if (!document.id){
+                const type = "{{ current_type }}" || 
+                         (document.querySelector('#{{ form.type.vars.id }}') 
+                          ? document.querySelector('#{{ form.type.vars.id }}').value 
+                          : '');
+						  }
+            	const year = new Date().getFullYear().toString().slice(-2);
+                const prefixMap = {
+                    'Devis achat': 'DA',
+                    'Commande achat': 'CA',
+                    'Facture achat': 'FA',
+                    'Facture achat avoire': 'FAA',
+                    'Bon d\'entré': 'BE',
+                    'Bon de transfert': 'BT',
+                    'Bon de retour': 'BR',
+                    'Devis vente': 'DV',
+                    'Commande vente': 'CV',
+                    'Facture vente': 'FV',
+                    'Facture vente avoire': 'FVA',
+                    'Bon de sortie': 'BS',
+                    'Bon de livraison': 'BL',
+                    'Inventaire': 'INV'
+                };
+			const prefix = prefixMap[type] || 'DOC';
+            const referencePreview = prefix + year + '000001';
+
+            if (document.querySelector('#reference-preview')) {
+                document.querySelector('#reference-preview').textContent = referencePreview;
+            }
+            
+            if (document.querySelector('#{{ form.reference.vars.id }}')) {
+                document.querySelector('#{{ form.reference.vars.id }}').value = referencePreview;
+            }
+		}
+
+            function addLigneForm() {
+                const prototype = ligneCollection.dataset.prototype;
+                const newForm = prototype.replace(/__name__/g, index);
+                const newRow = document.createElement('tr');
+                newRow.className = 'ligne-row';
+                newRow.innerHTML = newForm;
+
+                const actionCell = document.createElement('td');
+                actionCell.className = 'text-end';
+                actionCell.innerHTML = `
+                    <button type="button" class="btn btn-sm btn-danger remove-ligne">
+                        <i class="ri-delete-bin-line"></i>
+                    </button>
+                `;
+                newRow.appendChild(actionCell);
+
+                setupLigneEvents(newRow);
+                ligneCollection.appendChild(newRow);
+                index++;
+                ligneCollection.dataset.index = index;
+                updateTotals();
+            }
+
+            function setupLigneEvents(row) {
+                const prixInput = row.querySelector('[id$="_prixUnitaireHt"]');
+                const qteInput = row.querySelector('[id$="_qte"]');
+                const remiseInput = row.querySelector('[id$="_remise"]');
+
+                if (prixInput && qteInput) {
+                    prixInput.addEventListener('input', function () {
+                        updateLigneTotal(this);
+                    });
+                    qteInput.addEventListener('input', function () {
+                        updateLigneTotal(this);
+                    });
+                }
+
+                if (remiseInput) {
+                    remiseInput.addEventListener('input', function () {
+                        updateLigneTotal(this);
+                    });
+                }
+
+                row.querySelector('.remove-ligne').addEventListener('click', function () {
+                    row.remove();
+                    updateTotals();
+                });
+            }
+
+            function updateLigneTotal(input) {
+                const row = input.closest('.ligne-row');
+                const prixUnitaire = parseFloat(row.querySelector('[id$="_prixUnitaireHt"]').value) || 0;
+                const qte = parseFloat(row.querySelector('[id$="_qte"]').value) || 0;
+                const remise = parseFloat(row.querySelector('[id$="_remise"]').value) || 0;
+
+                const totalHT = (prixUnitaire * qte) * (1 - remise / 100);
+                row.querySelector('[id$="_prixTotalHt"]').value = totalHT.toFixed(2);
+
+                updateTotals();
+            }
+
+            function updateTotals() {
+                let montantHt = 0;
+
+                document.querySelectorAll('[id$="_prixTotalHt"]').forEach(input => {
+                    montantHt += parseFloat(input.value) || 0;
+                });
+
+                const tauxTva = parseFloat(document.querySelector('#{{ form.tauxTva.vars.id }}').value) || 0;
+                const montantTva = montantHt * (tauxTva / 100);
+                const montantTtc = montantHt + montantTva;
+
+                const timbre = parseFloat(document.querySelector('#{{ form.timbre.vars.id }}').value) || 0;
+                const retenu = parseFloat(document.querySelector('#{{ form.retenu.vars.id }}').value) || 0;
+                const montantAPayer = montantTtc + timbre - retenu;
+
+                document.querySelector('#{{ form.montantHt.vars.id }}').value = montantHt.toFixed(2);
+                document.querySelector('#{{ form.montantTva.vars.id }}').value = montantTtc.toFixed(2);
+                document.querySelector('#{{ form.montantAPayer.vars.id }}').value = montantAPayer.toFixed(2);
+            }
+
+            document.getElementById('add-ligne').addEventListener('click', addLigneForm);
+
+            document.querySelectorAll('.ligne-row').forEach(row => {
+                setupLigneEvents(row);
+            });
+
+            document.querySelector('#{{ form.tauxTva.vars.id }}').addEventListener('input', updateTotals);
+            document.querySelector('#{{ form.timbre.vars.id }}').addEventListener('input', updateTotals);
+            document.querySelector('#{{ form.retenu.vars.id }}').addEventListener('input', updateTotals);
+
+            if (!{{ document.id ? 'true' : 'false' }}) {
+                updateReferencePreview();
+            }
+
+            updateTotals();
+            
+            form.addEventListener('submit', function (e) {
+                if (document.querySelectorAll('.ligne-row').length === 0) {
+                    e.preventDefault();
+                    alert('Veuillez ajouter au moins une ligne au document');
+                    return;
+                }
+
+                let isValid = true;
+                document.querySelectorAll('.ligne-row').forEach(row => {
+                    const qte = parseFloat(row.querySelector('[id$="_qte"]').value) || 0;
+                    const prix = parseFloat(row.querySelector('[id$="_prixUnitaireHt"]').value) || 0;
+
+                    if (qte <= 0 || prix <= 0) {
+                        isValid = false;
+                        row.style.border = '1px solid red';
+                    } else {
+                        row.style.border = '';
+                    }
+                });
+
+                if (!isValid) {
+                    e.preventDefault();
+                    alert('Veuillez corriger les lignes en rouge (quantité et prix doivent être > 0)');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

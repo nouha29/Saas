@@ -1,0 +1,93 @@
+{{ include('partials/main.html.twig') }}
+<head>
+	{{ include('partials/title-meta.html.twig', {title: 'Documents List'}) }}
+	<link rel="stylesheet" href="{{ asset('assets/libs/sweetalert2/sweetalert2.min.css') }}"/>
+	<link href="{{ asset('assets/css/bootstrap.min.css') }}" rel="stylesheet">
+	<link href="{{ asset('assets/css/icons.min.css') }}" rel="stylesheet">
+	<link href="{{ asset('assets/css/app.min.css') }}" rel="stylesheet"></head>
+<body>
+	<div id="layout-wrapper">
+		{{ include('partials/menu.html.twig') }}
+		<div class="main-content">
+			<div class="page-content">
+				<div class="container-fluid">
+					{{ include('partials/page-title.html.twig', {pagetitle: 'Documents', title: 'List'}) }}
+					<div class="row">
+						<div class="col-12">
+							<div class="card">
+								<div class="card-body">
+									<div class="row mb-2">
+										<div class="col-sm-4">
+											<a href="{{ path('app_documents_new', {'Doc': current_type}) }}" class="btn btn-success mb-2">
+												<i class="ri-add-line align-bottom me-1"></i>
+												Créer un document
+											</a>
+										</div>
+									</div>
+									<div class="table-responsive">
+										<table class="table table-centered table-nowrap mb-0">
+											<thead class="table-light">
+												<tr>
+													<th>Reference</th>
+													<th>Date</th>
+													<th>Type</th>
+													<th>Sender</th>
+													<th>Recipient</th>
+													<th>Total TTC</th>
+													<th>Status</th>
+													<th>Actions</th>
+												</tr>
+											</thead>
+											<tbody>
+												{% for document in documents %}
+													<tr>
+														<td>{{ document.reference }}</td>
+														<td>{{ document.docDate|date('d/m/Y') }}</td>
+														<td>{{ document.type }}</td>
+														<td>{{ document.emetteur.username }}</td>
+														<td>{{ document.destinataire.username }}</td>
+														<td>{{ document.montantTva}}</td>
+														<td>
+															<span class="badge bg-{{ document.status == 'Paid' ? 'success' : 'warning' }}">
+																{{ document.status }}
+															</span>
+														</td>
+														<td>
+															<a href="{{ path('app_documents_show', {'id': document.id}) }}" class="btn btn-sm btn-light">
+																<i class="ri-eye-line"></i>
+															</a>
+															{% if document.status != "Confirmé" %}
+																<a href="{{ path('app_documents_edit', {'id': document.id}) }}" class="btn btn-sm btn-primary">
+																	<i class="ri-pencil-line"></i>
+																</a>
+															{% endif %}
+															<form method="post" action="{{ path('app_documents_delete', {'id': document.id}) }}" style="display: inline-block;" onsubmit="return confirm('Are you sure you want to delete this document?');">
+																<input type="hidden" name="_token" value="{{ csrf_token('delete' ~ document.id) }}">
+																<button type="submit" class="btn btn-sm btn-danger">
+																	<i class="ri-delete-bin-line"></i>
+																</button>
+															</form>
+
+														</td>
+													</tr>
+												{% else %}
+													<tr>
+														<td colspan="8" class="text-center">No documents found</td>
+													</tr>
+												{% endfor %}
+											</tbody>
+										</table>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			{{ include('partials/footer.html.twig') }}
+		</div>
+	</div>
+	{{ include('partials/vendor-scripts.html.twig') }}
+	<script src="{{ asset('assets/libs/sweetalert2/sweetalert2.min.js') }}"></script>
+	<script src="../../assets/js/app.js"></script>
+</body></html>

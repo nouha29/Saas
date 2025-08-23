@@ -1,0 +1,79 @@
+{{ include('partials/main.html.twig') }}
+
+<head>
+	{{ include('partials/title-meta.html.twig', {title: 'Liste des nomenclatures'}) }}
+	<link href="{{ asset('assets/libs/sweetalert2/sweetalert2.min.css') }}" rel="stylesheet" type="text/css"/>
+	<link href="{{ asset('assets/css/bootstrap.min.css') }}" rel="stylesheet">
+	<link href="{{ asset('assets/css/icons.min.css') }}" rel="stylesheet">
+	<link href="{{ asset('assets/css/app.min.css') }}" rel="stylesheet">
+</head>
+
+<body>
+	<div id="layout-wrapper">
+		{{ include('partials/menu.html.twig') }}
+
+		<div class="main-content">
+			<div class="page-content">
+				<div class="container-fluid">
+					{{ include('partials/page-title.html.twig', {
+                        pagetitle: 'Nomenclatures',
+                        title: 'Liste des nomenclatures'
+                    }) }}
+
+					<div class="row">
+						<div class="col-12">
+							<div class="card">
+								<div class="card-body">
+									<div class="d-flex justify-content-between align-items-center mb-4">
+										<h4 class="card-title">Compositions des produits</h4>
+										<a href="{{ path('nomenclature_new') }}" class="btn btn-success">
+											<i class="ri-add-line align-bottom me-1"></i>
+											Ajouter
+										</a>
+									</div>
+
+									<div class="table-responsive">
+										<table class="table table-striped table-bordered">
+											<thead>
+												<tr>
+													<th>ID</th>
+													<th>Produit Fini</th>
+													<th>Actions</th>
+												</tr>
+											</thead>
+											<tbody>
+												{% for produit in produits %}
+													<tr>
+														<td>{{ produit.id }}</td>
+														<td>{{ produit.reference }}</td>
+														<td class="text-center">
+															<a href="{{ path('nomenclature_show', {'produit_id': produit.id}) }}" class="btn btn-sm btn-info" title="Voir">
+																<i class="ri-eye-line"></i>
+															</a>
+
+
+														</td>
+													</tr>
+												{% else %}
+													<tr>
+														<td colspan="3" class="text-center">Aucune nomenclature trouvée</td>
+													</tr>
+												{% endfor %}
+											</tbody>
+										</table>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			{{ include('partials/footer.html.twig') }}
+		</div>
+	</div>
+
+	{{ include('partials/vendor-scripts.html.twig') }}
+	<script src="{{ asset('assets/libs/sweetalert2/sweetalert2.min.js') }}"></script>
+
+
+</body></html>

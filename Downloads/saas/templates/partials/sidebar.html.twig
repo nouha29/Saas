@@ -1,0 +1,304 @@
+<!-- ========== App Menu ========== -->
+<div
+	class="app-menu navbar-menu">
+	<!-- LOGO -->
+	<div
+		class="navbar-brand-box">
+		<!-- Dark Logo-->
+		<a href="/" class="logo logo-dark">
+			<span class="logo-sm">
+				<img src="../../assets/images/logo-sm.png" alt="" height="22">
+			</span>
+			<span class="logo-lg">
+				<img src="../../assets/images/logo-dark.png" alt="" height="17">
+			</span>
+		</a>
+		<!-- Light Logo-->
+		<a href="/" class="logo logo-light">
+			<span class="logo-sm">
+				<img src="../../assets/images/logo-sm.png" alt="" height="22">
+			</span>
+			<span class="logo-lg">
+				<img src="../../assets/images/logo-light.png" alt="" height="17">
+			</span>
+		</a>
+		<button type="button" class="btn btn-sm p-0 fs-20 header-item float-end btn-vertical-sm-hover" id="vertical-hover">
+			<i class="ri-record-circle-line"></i>
+		</button>
+	</div>
+
+	<div id="scrollbar">
+		<div class="container-fluid">
+			<div id="two-column-menu"></div>
+			<ul class="navbar-nav" id="navbar-nav">
+				<li class="menu-title">
+					<span data-key="t-menu">Menu</span>
+				</li>
+
+				<!-- Dashboards -->
+				<li class="nav-item">
+					<a class="nav-link menu-link" href="#sidebarDashboards" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarDashboards">
+						<i class="ri-dashboard-2-line"></i>
+						<span data-key="t-dashboards">Dashboards</span>
+					</a>
+					<div class="collapse menu-dropdown" id="sidebarDashboards">
+						<ul class="nav nav-sm flex-column">
+							<li class="nav-item">
+								<a href="#" class="nav-link">Tableau de Bord Principal</a>
+							</li>
+						</ul>
+					</div>
+					<div class="collapse menu-dropdown" id="sidebarDashboards">
+						<ul class="nav nav-sm flex-column">
+							<li class="nav-item">
+								<a href="#" class="nav-link">Module Ventes</a>
+							</li>
+						</ul>
+					</div>
+					<div class="collapse menu-dropdown" id="sidebarDashboards">
+						<ul class="nav nav-sm flex-column">
+							<li class="nav-item">
+								<a href="#" class="nav-link">Module Stocks et Approvisionnement</a>
+							</li>
+						</ul>
+					</div>
+					<div class="collapse menu-dropdown" id="sidebarDashboards">
+						<ul class="nav nav-sm flex-column">
+							<li class="nav-item">
+								<a href="#" class="nav-link">Module Production</a>
+							</li>
+						</ul>
+					</div>
+
+				</li>
+
+				<!-- Messages -->
+				<li class="nav-item">
+					<a class="nav-link menu-link" href="#sidebarMessages" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarMessages">
+						<i class="ri-mail-line"></i>
+						<span data-key="t-messages">Messages</span>
+					</a>
+					<div class="collapse menu-dropdown" id="sidebarMessages">
+						<ul class="nav nav-sm flex-column">
+							<li class="nav-item">
+								<a href="apps-chat" class="nav-link">Boite Réception</a>
+							</li>
+							<li class="nav-item">
+								<a href="apps-chat" class="nav-link">Nouveaux Messages</a>
+							</li>
+							<li class="nav-item">
+								<a href="apps-chat" class="nav-link">Messages Envoyés</a>
+							</li>
+							<li class="nav-item">
+								<a href="apps-chat" class="nav-link">Corbeilles</a>
+							</li>
+						</ul>
+					</div>
+				</li>
+
+				<!-- Gestion Des Achats -->
+				<li class="nav-item">
+					<a class="nav-link menu-link" href="#sidebarPurchases" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarPurchases">
+						<i class="ri-shopping-cart-line"></i>
+						<span>Gestion Des Achats</span>
+					</a>
+					<div class="collapse menu-dropdown" id="sidebarPurchases">
+						<ul class="nav nav-sm flex-column">
+							<li class="nav-item">
+								<a href="{{ path('app_documents_index', {'Doc': 'DA'}) }}" class="nav-link">Devis achat</a>
+							</li>
+							<li class="nav-item">
+								<a href="{{ path('app_documents_index', {'Doc': 'CA'}) }}" class="nav-link">Commandes achat</a>
+							</li>
+							<li class="nav-item">
+								<a href="{{ path('app_documents_index', {'Doc': 'FA'}) }}" class="nav-link">Factures achat</a>
+							</li>
+							<li class="nav-item">
+								<a href="{{ path('app_documents_index', {'Doc': 'FAA'}) }}" class="nav-link">Factures achat Avoire</a>
+							</li>
+							<li class="nav-item">
+								<a href="{{ path('app_documents_index', {'Doc': 'BE'}) }}" class="nav-link">Bon d'entrée</a>
+							</li>
+							<li class="nav-item">
+								<a href="{{ path('app_documents_index', {'Doc': 'BT'}) }}" class="nav-link">Bon de transfert</a>
+							</li>
+							<li class="nav-item">
+								<a href="{{ path('app_documents_index', {'Doc': 'BR'}) }}" class="nav-link">Bon de retour</a>
+							</li>
+							<li class="nav-item">
+								<a href="{{ path('app_documents_index', {'Doc': 'Inv'}) }}" class="nav-link">Inventaire</a>
+							</li>
+						</ul>
+					</div>
+				</li>
+
+				<!-- Gestion Des Productions -->
+				<li class="nav-item">
+					<a class="nav-link menu-link" href="#sidebarProduction" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarProduction">
+						<i class="ri-building-2-line"></i>
+						<span>Gestion Des Productions</span>
+					</a>
+					<div class="collapse menu-dropdown" id="sidebarProduction">
+						<ul class="nav nav-sm flex-column">
+							<li class="nav-item">
+								<a href="layouts-horizontal" target="_blank" class="nav-link">Création des OF</a>
+							</li>
+							<li class="nav-item">
+								<a href="layouts-detached" target="_blank" class="nav-link">Demande de besoins</a>
+							</li>
+							<li class="nav-item">
+								<a href="{{ path('app_documents_index', {'Doc': 'BE'}) }}" class="nav-link">Bon d'entrée</a>
+							</li>
+							<li class="nav-item">
+								<a href="{{ path('app_documents_index', {'Doc': 'BS'}) }}" class="nav-link">Bon de sortie</a>
+							</li>
+							<li class="nav-item">
+								<a href="{{ path('app_documents_index', {'Doc': 'BT'}) }}" class="nav-link">Bon de transfert</a>
+							</li>
+							<li class="nav-item">
+								<a href="{{ path('app_documents_index', {'Doc': 'BR'}) }}" class="nav-link">Bon de retour</a>
+							</li>
+							<li class="nav-item">
+								<a href="{{ path('app_documents_index', {'Doc': 'Inv'}) }}" class="nav-link">Inventaire</a>
+							</li>
+						</ul>
+					</div>
+				</li>
+
+
+				<!-- Gestion Des Ventes -->
+				<li class="nav-item">
+					<a class="nav-link menu-link" href="#sidebarSales" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarSales">
+						<i class="ri-handbag-line"></i>
+						<span>Gestion Des Ventes</span>
+					</a>
+					<div class="collapse menu-dropdown" id="sidebarSales">
+						<ul class="nav nav-sm flex-column">
+							<li class="nav-item">
+								<a href="{{ path('app_documents_index', {'Doc': 'DV'}) }}" class="nav-link">Devis vente</a>
+							</li>
+							<li class="nav-item">
+								<a href="{{ path('app_documents_index', {'Doc': 'CV'}) }}" class="nav-link">Commandes vente</a>
+							</li>
+							<li class="nav-item">
+								<a href="{{ path('app_documents_index', {'Doc': 'FV'}) }}" class="nav-link">Factures vente</a>
+							</li>
+							<li class="nav-item">
+								<a href="{{ path('app_documents_index', {'Doc': 'FVA'}) }}" class="nav-link">Factures vente avoire</a>
+							</li>
+							<li class="nav-item">
+								<a href="{{ path('app_documents_index', {'Doc': 'BS'}) }}" class="nav-link">Bon de sortie</a>
+							</li>
+							<li class="nav-item">
+								<a href="{{ path('app_documents_index', {'Doc': 'BL'}) }}" class="nav-link">Bon de livraison</a>
+							</li>
+							<li class="nav-item">
+								<a href="{{ path('app_documents_index', {'Doc': 'Inv'}) }}" class="nav-link">Inventaire</a>
+							</li>
+						</ul>
+					</div>
+				</li>
+
+				<!-- Administration -->
+				<li class="nav-item">
+					<a class="nav-link menu-link" href="#sidebarAdmin" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarAdmin">
+						<i class="ri-settings-3-line"></i>
+						<span>Administration</span>
+					</a>
+					<div class="collapse menu-dropdown" id="sidebarAdmin">
+						<ul class="nav nav-sm flex-column">
+							<li class="nav-item">
+								<a href="layouts-horizontal" target="_blank" class="nav-link">Droits d'accès</a>
+							</li>
+							<li class="nav-item">
+								<a href="layouts-detached" target="_blank" class="nav-link">Profiles</a>
+							</li>
+							<li class="nav-item">
+								<a href="layouts-vertical-hovered" target="_blank" class="nav-link">Utilisateurs Internes</a>
+							</li>
+							<li class="nav-item">
+								<a href="#sidebarTiers" class="nav-link" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarTiers">
+									<i class="ri-group-line"></i>
+									Tiers
+								</a>
+								<div class="collapse menu-dropdown" id="sidebarTiers">
+									<ul class="nav nav-sm flex-column">
+										<li class="nav-item">
+											<a href="apps-ecommerce-products" class="nav-link">Clients</a>
+										</li>
+										<li class="nav-item">
+											<a href="apps-ecommerce-products" class="nav-link">Fournisseurs</a>
+										</li>
+									</ul>
+								</div>
+							</li>
+							<li class="nav-item">
+								<a href="layouts-vertical-hovered" target="_blank" class="nav-link">Magasins</a>
+							</li>
+							<li class="nav-item">
+								<a href="#sidebarArticles" class="nav-link" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarArticles">
+									<i class="ri-archive-line"></i>
+									Articles
+								</a>
+								<div class="collapse menu-dropdown" id="sidebarArticles">
+									<ul class="nav nav-sm flex-column">
+										<li class="nav-item">
+											<a href="apps-ecommerce-products" class="nav-link">Matières Premières</a>
+										</li>
+										<li class="nav-item">
+											<a href="apps-ecommerce-products" class="nav-link">Produits Finis</a>
+										</li>
+										<li class="nav-item">
+											<a href="apps-ecommerce-products" class="nav-link">Nomenclature</a>
+										</li>
+									</ul>
+								</div>
+							</li>
+						</ul>
+					</div>
+				</li>
+
+				<!-- Statistiques -->
+					{% set monthQS = app.request.query.get('month') ? ('?month=' ~ app.request.query.get('month')) : '' %}
+
+					<li class="nav-item">
+					<a class="nav-link menu-link" href="#sidebarStats" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarStats">
+						<i class="ri-bar-chart-line"></i>
+						<span>Statistiques</span>
+					</a>
+					<div class="collapse menu-dropdown" id="sidebarStats">
+						<ul class="nav nav-sm flex-column">
+{% set monthQS = app.request.query.get('month') ? ('?month=' ~ app.request.query.get('month')) : (currentMonth ? ('?month=' ~ currentMonth) : '') %}
+<a href="{{ path('stats_general') ~ monthQS }}" class="nav-link">Générale</a>
+						<li class="nav-item"><a href="{{ path('stats_achats') ~ monthQS }}" class="nav-link">Achats</a></li>
+						<li class="nav-item"><a href="{{ path('stats_productions') ~ monthQS }}" class="nav-link">Productions</a></li>
+						<li class="nav-item"><a href="{{ path('stats_ventes') ~ monthQS }}" class="nav-link">Ventes</a></li>
+						</ul>
+					</div>
+					</li>
+
+
+				<!-- Logs -->
+				<li class="nav-item">
+					<a class="nav-link menu-link" href="#sidebarLogs" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarLogs">
+						<i class="ri-file-list-2-line"></i>
+						<span data-key="t-logs">Logs</span>
+					</a>
+					<div class="collapse menu-dropdown" id="sidebarLogs">
+						<ul class="nav nav-sm flex-column">
+							<li class="nav-item">
+								<a href="apps-chat" class="nav-link">Administration</a>
+							</li>
+							<li class="nav-item">
+								<a href="apps-chat" class="nav-link">Système</a>
+							</li>
+						</ul>
+					</div>
+				</li>
+			</ul>
+		</div>
+	</div>
+
+	<div class="sidebar-background"></div>
+</div>
+<div class="vertical-overlay"></div>

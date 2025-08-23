@@ -1,0 +1,84 @@
+{{ include('partials/main.html.twig') }}
+
+<head>
+    {{ include('partials/title-meta.html.twig', {title: (depot.id ? 'Modifier' : 'Créer') ~ ' un dépôt'}) }}
+    <link href="{{ asset('assets/css/bootstrap.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('assets/css/icons.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('assets/css/app.min.css') }}" rel="stylesheet">
+</head>
+
+<body>
+    <div id="layout-wrapper">
+        {{ include('partials/menu.html.twig') }}
+        
+        <div class="main-content">
+            <div class="page-content">
+                <div class="container-fluid">
+                <br>
+                    {{ include('partials/page-title.html.twig', {
+                        pagetitle: 'Gestion des Dépôts',
+                        title: (depot.id ? 'Modifier un dépôt' : 'Créer un nouveau dépôt')
+                    }) }}
+                    
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h4 class="card-title mb-4">{{ depot.id ? 'Modifier le dépôt' : 'Nouveau dépôt' }}</h4>
+                                    
+                                    {{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': 'novalidate'}}) }}
+                                        <div class="mb-3">
+                                            {{ form_label(form.intitule, null, {'label_attr': {'class': 'form-label'}}) }}
+                                            {{ form_widget(form.intitule, {'attr': {'class': 'form-control'}}) }}
+                                            <div class="invalid-feedback">
+                                                {{ form_errors(form.intitule) }}
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="row mt-4">
+                                            <div class="col-sm-6">
+                                                <a href="{{ path('app_depots_index') }}" class="btn btn-secondary waves-effect">
+                                                    <i class="ri-arrow-left-line align-bottom me-1"></i> Retour à la liste
+                                                </a>
+                                            </div>
+                                            <div class="col-sm-6">
+                                                <div class="text-sm-end">
+                                                    <button type="submit" class="btn btn-success waves-effect waves-light">
+                                                        <i class="ri-save-line align-bottom me-1"></i> {{ depot.id ? 'Modifier' : 'Enregistrer' }}
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {{ form_end(form) }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {{ include('partials/footer.html.twig') }}
+        </div>
+    </div>
+    
+    {{ include('partials/customizer.html.twig') }}
+    {{ include('partials/vendor-scripts.html.twig') }}
+    
+    <script>
+        (function () {
+            'use strict'
+            var forms = document.querySelectorAll('.needs-validation')
+            Array.prototype.slice.call(forms)
+                .forEach(function (form) {
+                    form.addEventListener('submit', function (event) {
+                        if (!form.checkValidity()) {
+                            event.preventDefault()
+                            event.stopPropagation()
+                        }
+                        
+                        form.classList.add('was-validated')
+                    }, false)
+                })
+        })()
+    </script>
+</body>
+</html>

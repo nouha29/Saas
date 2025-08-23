@@ -1,0 +1,6 @@
+<form class="d-inline delete-form" method="post" action="{{ path('nomenclature_delete', {'id': nomenclature.id}) }}" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette composition?');">
+	<input type="hidden" name="_token" value="{{ csrf_token('delete' ~ nomenclature.id) }}">
+	<button class="btn btn-sm btn-danger" title="Supprimer">
+		<i class="ri-delete-bin-line"></i>
+	</button>
+</form>

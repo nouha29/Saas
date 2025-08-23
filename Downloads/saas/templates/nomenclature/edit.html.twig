@@ -1,0 +1,209 @@
+{{ include('partials/main.html.twig') }}
+
+<head>
+	{{ include('partials/title-meta.html.twig', {title: 'Modifier nomenclature'}) }}
+	<link href="{{ asset('assets/libs/sweetalert2/sweetalert2.min.css') }}" rel="stylesheet" type="text/css"/>
+	<link href="{{ asset('assets/css/bootstrap.min.css') }}" rel="stylesheet">
+	<link href="{{ asset('assets/css/icons.min.css') }}" rel="stylesheet">
+	<link href="{{ asset('assets/css/app.min.css') }}" rel="stylesheet">
+	<style>
+		
+	</style>
+</head>
+
+<body>
+	<div id="layout-wrapper">
+		{{ include('partials/menu.html.twig') }}
+
+		<div class="main-content">
+			<div class="page-content">
+				<div class="container-fluid">
+					{{ include('partials/page-title.html.twig', {
+                        pagetitle: 'Nomenclatures',
+                        title: 'Modifier la composition'
+                    }) }}
+
+					<div class="row justify-content-center">
+						<div class="col-xxl-12">
+							<div class="card">
+								<div class="card-header bg-warning text-white">
+									<h4 class="card-title mb-0">
+										<i class="ri-edit-line me-2"></i>
+										Modification de la composition:
+										{{ produit.reference }}
+									</h4>
+								</div>
+
+								{{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': 'novalidate'}}) }}
+								<div class="card-body p-4">
+									<div class="row">
+										<div class="col-lg-6">
+											<div class="mb-3">
+												{{ form_label(form.produit, 'Produit fini', {'label_attr': {'class': 'form-label'}}) }}
+												{{ form_widget(form.produit, {
+                                                    'attr': {
+                                                        'class': 'form-select',
+                                                        'disabled': 'disabled'
+                                                    } 
+                                                }) }}
+												<small class="text-muted">Vous ne pouvez pas changer le produit ici</small>
+											</div>
+										</div>
+									</div>
+
+									<div class="border-top border-top-dashed my-4"></div>
+									<h5 class="mb-3">Composition du produit</h5>
+
+									<div class="alert alert-info">
+										<i class="ri-information-line me-2"></i>
+										Vous pouvez modifier, ajouter ou supprimer des matières premières
+									</div>
+
+									<div class="table-responsive">
+										<table class="table table-borderless table-nowrap mb-0">
+											<thead class="table-light">
+												<tr>
+													<th>Matière première</th>
+													<th>Consommation</th>
+													<th>Unité</th>
+													<th class="text-end">Actions</th>
+												</tr>
+											</thead>
+											<tbody id="composition-lignes" data-prototype="{{ form_widget(form.compositions.vars.prototype)|e('html_attr') }}" data-index="{{ form.compositions|length }}">
+												{% for composition in form.compositions %}
+													<tr class="composition-row">
+														<td>
+															{{ form_widget(composition.matiere, {
+                                                                'attr': {
+                                                                    'class': 'form-select matiere-select',
+                                                                    'required': 'required'
+                                                                }
+                                                            }) }}
+														</td>
+														<td>
+															{{ form_widget(composition.consommation, {
+                                                                'attr': {
+                                                                    'class': 'form-control consommation-input',
+                                                                    'required': 'required'
+                                                                }
+                                                            }) }}
+														</td>
+														<td>
+															<span class="unite-display">{{ composition.vars.data.matiere.unite ?? '' }}</span>
+														</td>
+														<td class="text-end">
+															<button type="button" class="btn btn-sm btn-danger remove-ligne">
+																<i class="ri-delete-bin-line"></i>
+															</button>
+														</td>
+													</tr>
+												{% endfor %}
+											</tbody>
+											<tfoot>
+												<tr>
+													<td colspan="4" class="text-end">
+														<button type="button" id="add-ligne" class="btn btn-soft-secondary fw-medium">
+															<i class="ri-add-fill me-1 align-bottom"></i>
+															Ajouter une matière
+														</button>
+													</td>
+												</tr>
+											</tfoot>
+										</table>
+									</div>
+								</div>
+								<div class="card-body p-4 border-top">
+									<div class="hstack gap-2 justify-content-end">
+										<button type="submit" class="btn btn-success">
+											<i class="ri-save-line align-bottom me-1"></i>
+											Enregistrer les modifications
+										</button>
+										<a href="{{ path('nomenclature_show', {'produit_id': produit.id}) }}" class="btn btn-light">
+											Annuler
+										</a>
+									</div>
+								</div>
+								{{ form_end(form) }}
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			{{ include('partials/footer.html.twig') }}
+		</div>
+	</div>
+
+	{{ include('partials/vendor-scripts.html.twig') }}
+	<script src="{{ asset('assets/libs/sweetalert2/sweetalert2.min.js') }}"></script>
+
+	<script>
+		document.addEventListener('DOMContentLoaded', function () {
+const addButton = document.getElementById('add-ligne');
+const container = document.getElementById('composition-lignes');
+const prototype = container.dataset.prototype;
+let index = parseInt(container.dataset.index);
+
+addButton.addEventListener('click', function () {
+const newForm = prototype.replace(/__name__/g, index);
+const newRow = document.createElement('tr');
+newRow.classList.add('composition-row');
+newRow.innerHTML = newForm;
+const uniteCell = document.createElement('td');
+uniteCell.innerHTML = '<span class="unite-display"></span>';
+newRow.appendChild(uniteCell);
+
+const deleteCell = document.createElement('td');
+deleteCell.className = 'text-end';
+deleteCell.innerHTML = `<button type="button" class="btn btn-sm btn-danger remove-ligne">
+                                            <i class="ri-delete-bin-line"></i>
+                                        </button>`;
+newRow.appendChild(deleteCell);
+
+container.appendChild(newRow);
+index++;
+container.dataset.index = index;
+
+initRowEvents(newRow);
+});
+
+function initRowEvents(row) { 
+row.querySelector('.remove-ligne').addEventListener('click', function () {
+row.remove();
+});
+
+const matiereSelect = row.querySelector('.matiere-select');
+if (matiereSelect) { 
+updateUniteDisplay(matiereSelect);
+
+matiereSelect.addEventListener('change', function () {
+updateUniteDisplay(this);
+});
+
+matiereSelect.required = true;
+}
+
+const consommationInput = row.querySelector('.consommation-input');
+if (consommationInput) {
+consommationInput.required = true;
+}
+}
+
+function updateUniteDisplay(selectElement) {
+const row = selectElement.closest('tr');
+const uniteDisplay = row.querySelector('.unite-display');
+const selectedOption = selectElement.options[selectElement.selectedIndex];
+const unite = selectedOption ? selectedOption.getAttribute('data-unite') : '';
+uniteDisplay.textContent = unite || '';
+}
+
+document.querySelectorAll('.composition-row').forEach(row => { 
+const matiereSelect = row.querySelector('.matiere-select');
+if (matiereSelect && matiereSelect.selectedIndex > 0) {
+updateUniteDisplay(matiereSelect);
+}
+
+initRowEvents(row);
+});
+});
+	</script>
+</body></html>

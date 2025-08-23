@@ -1,0 +1,6 @@
+twig:
+  default_path: "%kernel.project_dir%/templates"
+  globals: {}
+  form_themes: ["bootstrap_5_layout.html.twig"]
+  date: { format: "d/m/Y", interval_format: "%%d jours" }
+  number_format: { decimals: 2, decimal_point: ",", thousands_separator: " " }

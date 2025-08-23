@@ -1,0 +1,208 @@
+{{ include('partials/main.html.twig') }}
+
+<head>
+	{{ include('partials/title-meta.html.twig', {title: 'Détails nomenclature'}) }}
+	<link href="{{ asset('assets/libs/sweetalert2/sweetalert2.min.css') }}" rel="stylesheet" type="text/css"/>
+	<link href="{{ asset('assets/css/bootstrap.min.css') }}" rel="stylesheet">
+	<link href="{{ asset('assets/css/icons.min.css') }}" rel="stylesheet">
+	<link href="{{ asset('assets/css/app.min.css') }}" rel="stylesheet">
+	<style>
+		.detail-card {
+			border: none;
+			border-radius: 10px;
+			box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+		}
+		.table-detail thead th {
+			background-color: #f8f9fa;
+			font-weight: 600;
+			border-bottom: 2px solid #e9ecef;
+		}
+		.composition-row {
+			transition: background-color 0.2s;
+		}
+		.composition-row:hover {
+			background-color: rgba(108, 117, 125, 0.05);
+		}
+		.detail-header {
+			background: linear-gradient(120deg, #6c757d, #495057);
+			color: white;
+			border-radius: 10px 10px 0 0;
+			padding: 1.5rem;
+		}
+		.badge-unite {
+			background-color: #e9ecef;
+			color: #495057;
+			font-weight: 500;
+			padding: 0.4em 0.8em;
+		}
+	</style>
+</head>
+
+<body>
+	<div id="layout-wrapper">
+		{{ include('partials/menu.html.twig') }}
+
+		<div class="main-content">
+			<div class="page-content">
+				<div class="container-fluid">
+					{{ include('partials/page-title.html.twig', {
+                        pagetitle: 'Nomenclatures',
+                        title: 'Détails de la composition'
+                    }) }}
+
+					<div class="row justify-content-center">
+						<div class="col-xxl-12">
+							<div class="card detail-card">
+								<div class="detail-header">
+									<div class="d-flex justify-content-between align-items-center">
+										<div>
+											<h4 class="mb-0">Composition de :
+												{{ produit.reference }}</h4>
+										</div>
+
+									</div>
+								</div>
+
+								<div class="card-body">
+									<div class="row mb-4">
+										<div class="col-md-6">
+											<div class="card border">
+												<div class="card-body">
+													<h5 class="card-title text-muted">Informations produit</h5>
+													<div class="d-flex align-items-center mb-3">
+														<div class="flex-grow-1">
+															<p class="mb-1">
+																<strong>Réference:</strong>
+																{{ produit.reference }}</p>
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+
+										<div class="col-md-6">
+											<div class="card border">
+												<div class="card-body">
+													<h5 class="card-title text-muted">Statistiques</h5>
+													<div class="d-flex justify-content-between">
+														<div class="text-center">
+															<h3 class="mb-0">{{ nomenclatures|length }}</h3>
+															<p class="text-muted mb-0">Composants</p>
+														</div>
+														<div class="text-center">
+															{% set totalConsommation = 0 %}
+															{% for item in nomenclatures %}
+																{% set totalConsommation = totalConsommation + item.consommation %}
+															{% endfor %}
+															<h3 class="mb-0">{{ totalConsommation|number_format(2) }}</h3>
+															<p class="text-muted mb-0">Total consommation</p>
+														</div>
+														<div class="text-center">
+															<h3 class="mb-0">{{ produit.unite }}</h3>
+															<p class="text-muted mb-0">Unité produit</p>
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+
+									<h5 class="mb-3">Composition du produit</h5>
+									<div class="table-responsive">
+										<table class="table table-detail table-borderless table-hover mb-0">
+											<thead class="table-light">
+												<tr>
+													<th>Matière première</th>
+													<th>Consommation</th>
+													<th>Unité</th>
+												</tr>
+											</thead>
+											<tbody>
+												{% for item in nomenclatures %}
+													<tr class="composition-row">
+														<td>
+															<div class="d-flex align-items-center">
+																<div class="flex-grow-1 ms-2">
+																	<h6 class="mb-0">{{ item.matiere.reference }}</h6>
+																</div>
+															</div>
+														</td>
+														<td>{{ item.consommation|number_format(2) }}</td>
+														<td>
+															<span class="badge badge-unite">{{ item.matiere.unite }}</span>
+														</td>
+													</tr>
+												{% else %}
+													<tr>
+														<td colspan="5" class="text-center py-5">
+															<div class="d-flex flex-column align-items-center">
+																<i class="ri-file-list-2-line text-muted" style="font-size: 3rem;"></i>
+																<p class="mt-3 mb-0 text-muted">Aucune composition enregistrée</p>
+																<a href="{{ path('nomenclature_edit', {'produit_id': produit.id}) }}" class="btn btn-sm btn-outline-primary mt-2">
+																	<i class="ri-add-line me-1"></i>
+																	Ajouter des matières
+																</a>
+															</div>
+														</td>
+													</tr>
+												{% endfor %}
+											</tbody>
+										</table>
+									</div>
+
+
+								</div>
+
+								<div class="card-footer bg-light">
+									<div class="d-flex justify-content-between align-items-center">
+										<small class="text-muted">Dernière mise à jour:
+											{{ "now"|date("d/m/Y H:i") }}</small>
+										<div>
+											<a href="{{ path('nomenclature_edit', {'id': produit.id}) }}" class="btn btn-warning me-2">
+												<i class="ri-edit-line me-1"></i>
+												Modifier
+											</a>
+											<a href="{{ path('nomenclature_index') }}" class="btn btn-light">
+												<i class="ri-arrow-left-line me-1"></i>
+												Retour à la liste
+											</a>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			{{ include('partials/footer.html.twig') }}
+		</div>
+	</div>
+
+	{{ include('partials/vendor-scripts.html.twig') }}
+	<script src="{{ asset('assets/libs/sweetalert2/sweetalert2.min.js') }}"></script>
+
+	<script>
+		document.addEventListener('DOMContentLoaded', function () {
+const rows = document.querySelectorAll('.composition-row');
+rows.forEach((row, index) => {
+setTimeout(() => {
+row.style.opacity = 0;
+row.style.transform = 'translateY(10px)';
+row.animate([
+{
+opacity: 0,
+transform: 'translateY(20px)'
+}, {
+opacity: 1,
+transform: 'translateY(0)'
+}
+], {
+duration: 400,
+delay: index * 50,
+fill: 'forwards'
+});
+}, 100);
+});
+});
+	</script>
+</body></html>
